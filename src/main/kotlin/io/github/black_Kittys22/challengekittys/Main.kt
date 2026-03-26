@@ -240,7 +240,6 @@ class Main : JavaPlugin(), Listener {
         val sInv = SharedInvCommand(this)
         getCommand("shareinv")?.setExecutor(sInv)
         getCommand("shareinv")?.tabCompleter = sInv
-
         getCommand("skipitem")?.setExecutor { sender, _, _, _ ->
             if (sender.hasPermission("challenge.skip")) {
                 allItemsListener.selectNextItem()
