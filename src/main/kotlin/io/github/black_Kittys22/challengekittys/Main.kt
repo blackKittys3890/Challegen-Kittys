@@ -157,19 +157,14 @@ class Main : JavaPlugin(), Listener {
         infiniteLoopChallenge = InfiniteLoopChallenge(this)
         isInfiniteLoopActive = config.getBoolean("challenges.infiniteLoop.active", false)
         server.pluginManager.registerEvents(infiniteLoopChallenge, this)
-
-        // Randomizer Challenge initialisieren
         randomizerChallenge = RandomizerChallenge(this)
         isRandomizerActive = config.getBoolean("challenges.randomizer.active", false)
         server.pluginManager.registerEvents(randomizerChallenge, this)
-
-        // Timer Zeit und AutoStart laden
         timer.timeSeconds = config.getInt("timer.time", 0)
         isTimerAutoStartEnabled = config.getBoolean("timer.autoStart", true)
         isAllItemsChallengeActive = config.getBoolean("challenges.allItems.active", false)
         backpackInventory = Bukkit.createInventory(null, 54, Component.text("Globales Backpack", NamedTextColor.GOLD))
         loadBackpack()
-
         allMobsListener = AllMobsListener(this)
         isAllMobsChallengeActive = config.getBoolean("challenges.allMobs.active", false)
         server.pluginManager.registerEvents(allMobsListener, this)
