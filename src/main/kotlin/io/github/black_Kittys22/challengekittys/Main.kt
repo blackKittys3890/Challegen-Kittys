@@ -237,7 +237,6 @@ class Main : JavaPlugin(), Listener {
         getCommand("block")?.setExecutor(BlockCommand(this))
         getCommand("block")?.tabCompleter = BlockTabCompleter()
         getCommand("bc")?.setExecutor(BCCommand(this))
-
         val sInv = SharedInvCommand(this)
         getCommand("shareinv")?.setExecutor(sInv)
         getCommand("shareinv")?.tabCompleter = sInv
