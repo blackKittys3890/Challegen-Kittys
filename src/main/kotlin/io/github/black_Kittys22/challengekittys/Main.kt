@@ -72,7 +72,6 @@ class Main : JavaPlugin(), Listener {
     // ─────────────────────────────────────────────────────────────────────────
     lateinit var chainedTogetherChallenge: ChainedTogetherChallenge
     var isChainedTogetherActive = false
-    // ─── RANDOMIZER CHALLENGE ─────────────────────────────────────────────────
     lateinit var randomizerChallenge: RandomizerChallenge
     var isRandomizerActive = false
     lateinit var backpackInventory: Inventory
