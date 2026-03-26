@@ -106,7 +106,6 @@ class Main : JavaPlugin(), Listener {
         mobDropChallenge = MobDropChallenge(this)
         isMobDropChallengeActive = config.getBoolean("challenges.mobDrop.active", false)
         server.pluginManager.registerEvents(mobDropChallenge, this)
-
         server.pluginManager.registerEvents(timerColorGUI, this)
         craftingRandomizer = CraftingRandomizer(this)
         isCraftingRandomizerActive = config.getBoolean("challenges.craftingRandomizer.active", false)
