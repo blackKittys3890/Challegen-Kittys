@@ -146,7 +146,6 @@ class Main : JavaPlugin(), Listener {
         allItemsListener = AllItemsListener(this)
         monsterBattleChallenge = MonsterBattleChallenge(this)
 
-        // MobForceBattle – nur EINMAL registrieren
         mobForceBattleManager = MobForceBattleManager(this)
         server.pluginManager.registerEvents(MobForceBattleListener(this), this)
         server.pluginManager.registerEvents(MobForceRankingGUI, this)
