@@ -118,12 +118,10 @@ class Main : JavaPlugin(), Listener {
         isSwapKeysChallengeActive = config.getBoolean("challenges.swapKeys.active", false)
         server.pluginManager.registerEvents(swapKeysChallenge, this)
         if (isSwapKeysChallengeActive) swapKeysChallenge.enable()
-
         mobRandomizerChallenge = MobRandomizerChallenge(this)
         isMobRandomizerActive = config.getBoolean("challenges.mobRandomizer.active", false)
         mobRandomizerChallenge.loadMappings()
         server.pluginManager.registerEvents(mobRandomizerChallenge, this)
-
         bedrockChallenge = BedrockChallenge(this)
         timer = Timer(this)
         manager = ChallengeManager(this)
