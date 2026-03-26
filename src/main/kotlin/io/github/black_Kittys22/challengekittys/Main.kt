@@ -144,8 +144,6 @@ class Main : JavaPlugin(), Listener {
         manager = ChallengeManager(this)
         structureBattleManager = StructureBattleManager(this)
         allItemsListener = AllItemsListener(this)
-
-        // monsterBattleChallenge VOR registerListeners() initialisieren
         monsterBattleChallenge = MonsterBattleChallenge(this)
 
         // MobForceBattle – nur EINMAL registrieren
