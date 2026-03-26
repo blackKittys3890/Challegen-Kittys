@@ -102,7 +102,6 @@ class Main : JavaPlugin(), Listener {
 
     override fun onEnable() {
         saveDefaultConfig()
-
         mobDropChallenge = MobDropChallenge(this)
         isMobDropChallengeActive = config.getBoolean("challenges.mobDrop.active", false)
         server.pluginManager.registerEvents(mobDropChallenge, this)
