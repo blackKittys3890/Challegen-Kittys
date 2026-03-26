@@ -3,7 +3,7 @@ name: Discord Notify
 on:
   push:
     branches:
-      - master   # oder main
+      - master
   pull_request:
     types: [opened, closed]
 
@@ -19,7 +19,14 @@ jobs:
           contentType: 'application/json'
           data: |
             {
-              "content": "📢 Repo Update!\nBranch: ${{ github.ref }}\nUser: ${{ github.actor }}\nEvent: ${{ github.event_name }}",
               "username": "GitHub Bot",
-              "avatar_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+              "avatar_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+              "embeds": [
+                {
+                  "title": "GitHub Update!",
+                  "description": "Branch: ${{ github.ref }}\nUser: ${{ github.actor }}\nEvent: ${{ github.event_name }}",
+                  "color": 5814783,
+                  "timestamp": "${{ github.event.head_commit.timestamp || github.event.created_at }}"
+                }
+              ]
             }
