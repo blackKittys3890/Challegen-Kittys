@@ -1,0 +1,86 @@
+name: Challenge_Kittys
+main: io.github.black_Kittys22.challengekittys.Main
+version: 4.1
+api-version: 1.21
+authors:
+  - black_Kittys
+description: "Challenges Plugin für Minecraft Server. Viele inspiriert von BastiGHG"
+
+commands:
+  backpack:
+    description: Öffnet das globale Backpack
+    aliases: [ bp ]
+  exempt:
+    description: Befreit einen Spieler von allen Challenges
+    permission: challenge.exempt
+    usage: /exempt <Spieler>
+  warn:
+    description: Sendet eine Server-Warnung
+    permission: warn.use
+    usage: /warn <Nachricht>
+  bc:
+    description: Startet die Bedrock Challenge mit einer Zeitangabe.
+    usage: /bc <Zeit>
+  spec:
+    description: "Schaltet den Admin-Spectator-Modus an oder aus."
+    permission: challenge.spec
+    usage: "/spec"
+  chunkblock:
+    description: Sperrt oder entsperrt einen Block für Chunks.
+    permission: chunkchallenge.admin
+  chunkgui:
+    description: Zeigt alle erlaubten Blöcke in einem GUI.
+  timer:
+    description: Timer und Challenge Steuerung
+  reset:
+    description: Setzt das Projekt komplett zurück und löscht die Welten.
+    permission: challenge.reset
+    usage: /reset confirm
+  ch:
+    description: Wähle deine Challenges aus.
+    aliases: [challenges]
+  settings:
+    description: Ändere KeepInventory und andere Welt-Optionen.
+  shareinv:
+    description: Verwalte die Shared-Inventory Gruppen.
+    usage: /shareinv <add|remove> <Spieler> <Gruppe>
+    permission: challenge.admin
+  lb:
+    description: Lügenbattle Steuerung
+    usage: /lb round start
+  allitems:
+    description: All Items Challenge - Zeigt den Fortschritt
+    usage: /allitems [progress|gui|missing]
+    aliases: [ ai, items ]
+  monsterbattle:
+    description: Monster Battle Challenge steuern
+    usage: /monsterbattle <start|stop|stats|reset>
+    aliases: [ mb, mbattle ]
+    permission: challenge.monsterbattle
+  mobforce:
+    description: MobForceBattle verwalten
+    usage: /mobforce <start|stop|reset|status|joker|team>
+    permission: challenge.mobforce
+
+permissions:
+  challenge.monsterbattle:
+    description: Erlaubt die Nutzung der Monster Battle Challenge
+    default: op
+  challenge.exempt:
+    description: Erlaubt das Befreien von Spielern aus Challenges
+    default: op
+  challenge.reset:
+    description: Erlaubt den Server-Reset
+    default: op
+  challenge.spec:
+    description: Erlaubt den Admin-Spectator-Modus
+    default: op
+  challenge.admin:
+    description: Allgemeine Admin-Rechte für Challenges
+    default: op
+  warn.use:
+    description: Erlaubt das Senden von Server-Warnungen
+    default: op
+  challenge.mobforce:
+    description: Erlaubt die Nutzung von /mobforce
+    default: op

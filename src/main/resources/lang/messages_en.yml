@@ -1,0 +1,198 @@
+# ============================================================
+#  messages_en.yml  –  Challenge Kittys  (English)
+# ============================================================
+#  Placeholders: {name}, {item}, {mob}, {count}, {total}, etc.
+# ============================================================
+
+prefix: "§8[§6Challenge§8] §r"
+language-name: "English"
+
+# ── General ───────────────────────────────────────────────
+general:
+  no-permission: "§cYou don't have permission to do that!"
+  player-only: "§cThis command can only be used by players!"
+  unknown-command: "§cUnknown command!"
+  player-not-found: "§cPlayer §e{name} §cnot found!"
+  invalid-number: "§cPlease enter a valid number!"
+
+# ── Timer ──────────────────────────────────────────────────
+timer:
+  started: "§aTimer started."
+  paused: "§eTimer paused."
+  reset: "§cTimer reset."
+  set: "§aTime set to §e{seconds} §aseconds."
+  autostart-enabled: "§aAutomatic timer start has been §2enabled§a."
+  autostart-disabled: "§cAutomatic timer start has been §4disabled§c."
+  time-up-line: "§4==================================="
+  time-up-header: "§4§lTIME'S UP!"
+  warning-5min: "§6§l5 minutes left!"
+  warning-3min: "§6§l3 minutes left!"
+  warning-1min: "§c§l1 minute left!"
+  warning-30sec: "§c§l30 seconds left!"
+  warning-10sec: "§c§l10 seconds left!"
+  display-paused: "PAUSED ({time})"
+  color-set: "§7Timer color set to §e§l{theme}§7!"
+
+# ── ChallengeManager / GUI ────────────────────────────────
+challenges:
+  gui-title: "Challenges"
+  settings-title: "Settings"
+  luegenTitle: "Lie Battle Mode"
+  status-active: "ENABLED"
+  status-inactive: "DISABLED"
+
+  mob-drop-enabled: "§aMob Drop Challenge enabled!"
+  mob-drop-disabled: "§cMob Drop Challenge disabled."
+  shared-adv-enabled: "§aShared Advancements enabled!"
+  shared-adv-disabled: "§cShared Advancements disabled."
+  mob-randomizer-enabled: "§aMob Randomizer enabled!"
+  mob-randomizer-disabled: "§cMob Randomizer disabled."
+  crafting-randomizer-enabled: "§aCrafting Randomizer enabled!"
+  crafting-randomizer-disabled: "§cCrafting Randomizer disabled."
+  infinite-loop-enabled: "§aInfinite Loop enabled!"
+  infinite-loop-disabled: "§cInfinite Loop disabled."
+  randomizer-enabled: "§aRandomizer enabled!"
+  randomizer-disabled: "§cRandomizer disabled."
+
+  # Lore texts in the Challenge-GUI
+  lore:
+    monster-battle-hint: "Left-click: Start (30m) / Stop"
+    shared-adv-line1: "When a player unlocks an advancement,"
+    shared-adv-line2: "all others receive it automatically!"
+    shared-adv-line3: "Also works for datapack advancements."
+    crafting-rand-line1: "Every recipe yields a random item!"
+    crafting-rand-line2: "Recipes stay permanently assigned."
+    all-mobs-line1: "Defeat every mob one by one"
+    all-mobs-line2: "to collect exclusive trophies!"
+    infinite-loop-line1: "Every action repeats infinitely:"
+    infinite-loop-line2: "Break, Place, Hit, Shoot"
+    infinite-loop-line3: "Sneak = stop loop"
+    randomizer-line1: "Breaking blocks drops random items!"
+    randomizer-line2: "Normal drops are replaced."
+    mob-randomizer-line1: "Every mob is replaced by a random"
+    mob-randomizer-line2: "other mob!"
+    mob-randomizer-line3: "The mapping stays permanently fixed."
+
+# ── AllItems Challenge ────────────────────────────────────
+all-items:
+  bossbar-loading: "Loading challenge..."
+  bossbar-title: "§6Item: §e{item} §7(§a{count}§7/§2{total}§7)"
+  bossbar-complete: "ALL FOUND!"
+  found: "§a✓ §e{player} §7found the item: §6§l{item}"
+  challenge-complete: "§b§l!!! THE ALL-ITEMS CHALLENGE HAS BEEN COMPLETED !!!"
+
+# ── AllMobs Challenge ─────────────────────────────────────
+all-mobs:
+  bossbar-loading: "Loading mobs..."
+  bossbar-title: "§cMob: §e{mob} §7(§a{count}§7/§2{total}§7)"
+  bossbar-complete: "ALL DEFEATED!"
+  killed: "§c⚔ §e{player} §7defeated: §6§l{mob}"
+  challenge-complete: "§4§l!!! ALL MOBS HAVE BEEN DEFEATED !!!"
+  trophy-name: "Trophy: {mob}"
+  trophy-lore-killer: "Defeated by: §e{player}"
+  trophy-lore-progress: "Progress: §a{count} / {total}"
+  trophy-lore-sealed: "INDESTRUCTIBLE"
+  trophy-locked: "§c🛡 This trophy is sealed and cannot be used!"
+
+# ── SharedAdvancements Challenge ──────────────────────────
+shared-advancements:
+  bossbar-loading: "Loading advancements..."
+  bossbar-complete: "ALL DONE!"
+  unlocked: "§e{player} §7unlocked: §a§l{advancement} §7– everyone received it!"
+  challenge-complete: "§6§l!!! ALL ADVANCEMENTS HAVE BEEN UNLOCKED !!!"
+
+# ── MonsterBattle Challenge ───────────────────────────────
+monster-battle:
+  separator: "§6═════════════════════════"
+  started-title: "§cMONSTER BATTLE STARTED"
+  started-desc: "§eCollect kills! Kills spawn at the opponent!"
+  fight-begins: "§fFight begins: §6{player}"
+  finished: "§a{player} done! Time: §e{time}s"
+  results-header: "§6═══ RESULTS ═══"
+  results-entry: "§e{rank}. {player}: §f{time}s"
+  results-footer: "§6══════════════════"
+  started-cmd: "§aMonster Battle started!"
+  stopped-cmd: "§cMonster Battle stopped."
+  stats: "§eYou currently have §6{count} §ecreatures collected."
+  usage: "§cUsage: /monsterbattle <start/stop/stats>"
+  death-hurry: "§cHurry up! The timer keeps running!"
+
+# ── Bedrock Challenge ─────────────────────────────────────
+bedrock-challenge:
+  started: "§aBedrock Challenge started! Time: §e{time}"
+  broadcast-started: "§6Bedrock Challenge started! Time: §e{time}"
+  spawn-set: "§aChallenge started! Your spawn point has been set."
+  death-penalty: "§c§l☠ Death penalty: 1 minute item lock!"
+  item-locked: "§c🚫 Locked! §e{seconds} §csec. until the next item."
+  scoreboard-title: "NORTH RECORD"
+
+# ── Backpack ──────────────────────────────────────────────
+backpack:
+  title: "Global Backpack"
+
+# ── Chunk Challenge ───────────────────────────────────────
+chunk:
+  no-block: "§cNo block in sight!"
+  block-removed: "§a{block} removed!"
+  block-added: "§e{block} banned!"
+  gui-title: "Chunk Blacklist"
+  gui-removed: "§a{block} has been removed from the blacklist!"
+  gui-added: "§c{block} has been added to the blacklist."
+  boss-killed: "§aYou defeated the guardian! The border has been lifted."
+  gui-lore-remove: "Click to remove"
+
+# ── Dead-Sync / DeathListener ────────────────────────────
+death:
+  sync-spectator: "§cA player has died! The challenge is over."
+  sync-broadcast: "§4Challenge ended: §e{player} §4has died."
+
+# ── Reset Command ─────────────────────────────────────────
+reset:
+  confirm-hint: "§cUse: /reset confirm to delete all worlds!"
+  broadcast-header: "§4§lSERVER RESET"
+  broadcast-info: "§7Reset triggered by: §e{player}"
+  kick-title: "§c§lServer Reset\n\n§7The worlds were deleted by §e{player}§r§7.\n§fThe server is now restarting!"
+
+# ── Spectator Command ─────────────────────────────────────
+spectator:
+  activated: "§aSpectator mode activated (Vanish ON)."
+  deactivated: "§cSpectator mode ended."
+  vanish-on: "§aVanish activated!"
+  vanish-off: "§7You are now visible to everyone!"
+  tp-gui-title: "Player Teleport"
+  tp-done: "§7Teleported to §e{player}§7."
+  inventory-view: "§eViewing the inventory of §6{player} §e(❤ {health} / {max_health})"
+  compass-name: "Teleporter (Right-click)"
+  chest-name: "Inventory View (Right-click on player)"
+  vanish-item-name: "Status: INVISIBLE"
+  visible-item-name: "Status: VISIBLE"
+
+# ── Shared Inventory ──────────────────────────────────────
+shared-inv:
+  usage: "§cUsage: /shareinv <add|remove> <player> <group>"
+  added: "§a{player} has been added to group §e{group}§a!"
+  removed: "§e{player} has been removed from all groups!"
+
+# ── BC Command ────────────────────────────────────────────
+bc:
+  usage: "§cUsage: /BC <time> (e.g. 1h, 30m, 500s)"
+  invalid-format: "§cInvalid time format! Use h, m or s."
+
+# ── LB Command ────────────────────────────────────────────
+lb:
+  start-round: "Lie Battle round started."
+
+# ── Damage Clear Challenge ────────────────────────────────
+damage-clear:
+  subtitle: "-{hearts} ❤"
+
+# ── Tablist ───────────────────────────────────────────────
+tablist:
+  header: "\n§6§l★ CHALLENGES ★\n"
+  items-label: "§bItems: "
+  separator: "  §8|  "
+  mobs-label: "§cMobs: "
+
+# ── SkipItem ──────────────────────────────────────────────
+skip-item:
+  done: "§aNext item selected."
