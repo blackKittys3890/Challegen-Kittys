@@ -69,7 +69,6 @@ class Main : JavaPlugin(), Listener {
     var isSharedAdvancementsActive = false
     lateinit var infiniteLoopChallenge: InfiniteLoopChallenge
     var isInfiniteLoopActive = false
-    // ─────────────────────────────────────────────────────────────────────────
     lateinit var chainedTogetherChallenge: ChainedTogetherChallenge
     var isChainedTogetherActive = false
     lateinit var randomizerChallenge: RandomizerChallenge
