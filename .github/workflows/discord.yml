@@ -3,7 +3,7 @@ name: Discord Notify
 on:
   push:
     branches:
-      - master
+      - master   # oder main
   pull_request:
     types: [opened, closed]
 
@@ -17,7 +17,7 @@ jobs:
           url: ${{ secrets.DISCORD_WEBHOOK_URL }}
           method: POST
           contentType: 'application/json'
-          body: |
+          data: |
             {
               "content": "📢 Repo Update!\nBranch: ${{ github.ref }}\nUser: ${{ github.actor }}\nEvent: ${{ github.event_name }}",
               "username": "GitHub Bot",
