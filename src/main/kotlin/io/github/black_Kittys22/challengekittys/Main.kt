@@ -227,7 +227,6 @@ class Main : JavaPlugin(), Listener {
         val tCmd = TimerCommand(this)
         getCommand("timer")?.setExecutor(tCmd)
         getCommand("timer")?.tabCompleter = tCmd
-
         val mbCmd = MonsterBattleCommand(this)
         getCommand("monsterbattle")?.setExecutor(mbCmd)
         getCommand("monsterbattle")?.tabCompleter = mbCmd
