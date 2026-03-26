@@ -65,8 +65,6 @@ class Main : JavaPlugin(), Listener {
     var isSwapKeysChallengeActive = false
     lateinit var allMobsListener: AllMobsListener
     var isAllMobsChallengeActive = false
-
-    // ─── SHARED ADVANCEMENTS ─────────────────────────────────────────────────
     lateinit var allAchievments: AllAchievments
     var isSharedAdvancementsActive = false
     // ─────────────────────────────────────────────────────────────────────────
