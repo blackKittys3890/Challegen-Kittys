@@ -224,7 +224,6 @@ class Main : JavaPlugin(), Listener {
         getCommand("ch")?.setExecutor(chExec)
         getCommand("challenges")?.setExecutor(chExec)
         getCommand("lb")?.setExecutor(LBCommand(this))
-
         val tCmd = TimerCommand(this)
         getCommand("timer")?.setExecutor(tCmd)
         getCommand("timer")?.tabCompleter = tCmd
