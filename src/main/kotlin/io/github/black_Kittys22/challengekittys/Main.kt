@@ -87,7 +87,6 @@ class Main : JavaPlugin(), Listener {
     var isAllItemsChallengeActive = false
     val sharedInvGroups = mutableMapOf<UUID, String>()
     val blacklistedMaterials = mutableListOf<Material>()
-    val transformedChunks = mutableSetOf<String>()
     val chunkEntityMap = mutableMapOf<String, UUID>()
     val playerActiveChunk = mutableMapOf<UUID, String>()
     var isHalfHeartChallengeActive = false
