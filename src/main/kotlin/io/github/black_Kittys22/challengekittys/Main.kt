@@ -108,12 +108,10 @@ class Main : JavaPlugin(), Listener {
         server.pluginManager.registerEvents(mobDropChallenge, this)
 
         server.pluginManager.registerEvents(timerColorGUI, this)
-
         craftingRandomizer = CraftingRandomizer(this)
         isCraftingRandomizerActive = config.getBoolean("challenges.craftingRandomizer.active", false)
         craftingRandomizer.loadMappings()
         server.pluginManager.registerEvents(craftingRandomizer, this)
-
         swapKeysChallenge = SwapKeysChallenge(this)
         isSwapKeysChallengeActive = config.getBoolean("challenges.swapKeys.active", false)
         server.pluginManager.registerEvents(swapKeysChallenge, this)
