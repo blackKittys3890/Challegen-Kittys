@@ -154,8 +154,6 @@ class Main : JavaPlugin(), Listener {
         server.pluginManager.registerEvents(halfHeartChallenge, this)
         isHalfHeartChallengeActive = config.getBoolean("challenges.halfHeart.active", false)
         loadPluginConfig()
-
-        // Infinite Loop Challenge initialisieren
         infiniteLoopChallenge = InfiniteLoopChallenge(this)
         isInfiniteLoopActive = config.getBoolean("challenges.infiniteLoop.active", false)
         server.pluginManager.registerEvents(infiniteLoopChallenge, this)
