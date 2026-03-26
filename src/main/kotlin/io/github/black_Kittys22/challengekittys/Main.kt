@@ -67,9 +67,6 @@ class Main : JavaPlugin(), Listener {
     var isAllMobsChallengeActive = false
     lateinit var allAchievments: AllAchievments
     var isSharedAdvancementsActive = false
-    // ─────────────────────────────────────────────────────────────────────────
-
-    // ─── INFINITE LOOP CHALLENGE ─────────────────────────────────────────────
     lateinit var infiniteLoopChallenge: InfiniteLoopChallenge
     var isInfiniteLoopActive = false
     // ─────────────────────────────────────────────────────────────────────────
