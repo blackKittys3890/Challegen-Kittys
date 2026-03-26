@@ -130,7 +130,6 @@ class Main : JavaPlugin(), Listener {
         structureBattleManager = StructureBattleManager(this)
         allItemsListener = AllItemsListener(this)
         monsterBattleChallenge = MonsterBattleChallenge(this)
-
         mobForceBattleManager = MobForceBattleManager(this)
         server.pluginManager.registerEvents(MobForceBattleListener(this), this)
         server.pluginManager.registerEvents(MobForceRankingGUI, this)
