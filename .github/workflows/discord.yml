@@ -3,7 +3,7 @@ name: Discord Notify
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     types: [opened, closed]
 
