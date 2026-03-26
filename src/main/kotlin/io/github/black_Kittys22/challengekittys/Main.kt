@@ -167,8 +167,6 @@ class Main : JavaPlugin(), Listener {
         timer.timeSeconds = config.getInt("timer.time", 0)
         isTimerAutoStartEnabled = config.getBoolean("timer.autoStart", true)
         isAllItemsChallengeActive = config.getBoolean("challenges.allItems.active", false)
-
-        // Backpack initialisieren und laden
         backpackInventory = Bukkit.createInventory(null, 54, Component.text("Globales Backpack", NamedTextColor.GOLD))
         loadBackpack()
 
