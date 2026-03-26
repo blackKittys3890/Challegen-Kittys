@@ -23,9 +23,30 @@ jobs:
               "avatar_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
               "embeds": [
                 {
-                  "title": "GitHub Update!",
-                  "description": "Branch: ${{ github.ref }}\nUser: ${{ github.actor }}\nEvent: ${{ github.event_name }}",
+                  "title": "📢 GitHub Update",
+                  "description": "Neuer Push/PR Event!",
                   "color": 5814783,
+                  "fields": [
+                    {
+                      "name": "Branch",
+                      "value": "${{ github.ref }}",
+                      "inline": true
+                    },
+                    {
+                      "name": "User",
+                      "value": "${{ github.actor }}",
+                      "inline": true
+                    },
+                    {
+                      "name": "Event",
+                      "value": "${{ github.event_name }}",
+                      "inline": true
+                    }
+                  ],
+                  "footer": {
+                    "text": "GitHub Actions",
+                    "icon_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                  },
                   "timestamp": "${{ github.event.head_commit.timestamp || github.event.created_at }}"
                 }
               ]
