@@ -100,14 +100,6 @@ class Main : JavaPlugin(), Listener {
         updateTablist()
     }
 
-    private fun createVoidWorld(name: String) {
-        val wc = WorldCreator(name)
-        wc.type(WorldType.FLAT)
-        wc.generatorSettings("{\"layers\": [], \"biome\":\"plains\"}")
-        wc.generateStructures(false)
-        Bukkit.createWorld(wc)
-    }
-
     override fun onEnable() {
         saveDefaultConfig()
 
@@ -142,7 +134,6 @@ class Main : JavaPlugin(), Listener {
         mobForceBattleManager = MobForceBattleManager(this)
         server.pluginManager.registerEvents(MobForceBattleListener(this), this)
         server.pluginManager.registerEvents(MobForceRankingGUI, this)
-
         halfHeartChallenge = HalfHeartChallenge(this)
         server.pluginManager.registerEvents(halfHeartChallenge, this)
         isHalfHeartChallengeActive = config.getBoolean("challenges.halfHeart.active", false)
