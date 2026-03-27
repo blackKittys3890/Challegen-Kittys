@@ -18,16 +18,16 @@ jobs:
           contentType: 'application/json'
           data: |
             {
-              "content": "<@&ROLE_ID>",
-              "username": "YVtils",
-              "avatar_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+              "content": "<@1486792059389083678>",
+              "username": "Challenges",
+              "avatar_url": "https://smp-modcraft.de/challenges.png",
               "embeds": [
                 {
-                  "title": "YVtils Updates",
+                  "title": "Challenges Updates",
                   "description": "**New update available!**\n\n**Changelog:**\n${{ github.event.head_commit.message }}",
                   "color": 5763719,
                   "footer": {
-                    "text": "YVtils • https://yvtils.net"
+                    "text": "Challenges • https://smp-modcraft.de/plugins/challenge"
                   },
                   "timestamp": "${{ github.event.head_commit.timestamp || github.event.created_at }}"
                 }
@@ -40,7 +40,7 @@ jobs:
                       "type": 2,
                       "style": 5,
                       "label": "📦 Download ↗",
-                      "url": "https://yvtils.net/download"
+                      "url": "https://modrinth.com/plugin/challenges-plugin"
                     }
                   ]
                 }
