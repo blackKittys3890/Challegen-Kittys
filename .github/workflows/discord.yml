@@ -19,7 +19,7 @@ jobs:
           data: |
             {
               "content": "<@&ROLE_ID>",
-              "username": "YVtils",
+              "username": "Modcraft Challenges",
               "avatar_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
               "embeds": [
                 {
