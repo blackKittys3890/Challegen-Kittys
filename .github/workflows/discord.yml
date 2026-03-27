@@ -18,8 +18,8 @@ jobs:
           contentType: 'application/json'
           data: |
             {
-              "content": "<@1486792059389083678>",
-              "username": "Challenges",
+              "content": "<@&1486792059389083678>",
+              "username": "Challenge Plugin",
               "avatar_url": "https://smp-modcraft.de/challenges.png",
               "embeds": [
                 {
