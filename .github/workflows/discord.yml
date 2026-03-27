@@ -19,12 +19,12 @@ jobs:
           data: |
             {
               "content": "<@&ROLE_ID>",
-              "username": "Modcraft Challenges",
+              "username": "YVtils",
               "avatar_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
               "embeds": [
                 {
                   "title": "YVtils Updates",
-                  "description": "**New update available!**\nVersion 1.1.10 is now available for download.\n\n**Changelog:**\n• Add support for 1.21.11\n• Add permission to block players from receiving private messages\n• Fix some small bugs",
+                  "description": "**New update available!**\n\n**Changelog:**\n${{ github.event.head_commit.message }}",
                   "color": 5763719,
                   "footer": {
                     "text": "YVtils • https://yvtils.net"
