@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - master
-  pull_request:
-    types: [opened, closed]
+  workflow_dispatch:
 
 jobs:
   notify-discord:
@@ -19,35 +18,31 @@ jobs:
           contentType: 'application/json'
           data: |
             {
-              "username": "GitHub Bot",
+              "content": "<@&ROLE_ID>",
+              "username": "YVtils",
               "avatar_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
               "embeds": [
                 {
-                  "title": "📢 GitHub Update",
-                  "description": "Neuer Push/PR Event!",
-                  "color": 5814783,
-                  "fields": [
-                    {
-                      "name": "Branch",
-                      "value": "${{ github.ref }}",
-                      "inline": true
-                    },
-                    {
-                      "name": "User",
-                      "value": "${{ github.actor }}",
-                      "inline": true
-                    },
-                    {
-                      "name": "Event",
-                      "value": "${{ github.event_name }}",
-                      "inline": true
-                    }
-                  ],
+                  "title": "YVtils Updates",
+                  "description": "**New update available!**\nVersion 1.1.10 is now available for download.\n\n**Changelog:**\n• Add support for 1.21.11\n• Add permission to block players from receiving private messages\n• Fix some small bugs",
+                  "color": 5763719,
                   "footer": {
-                    "text": "GitHub Actions",
-                    "icon_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                    "text": "YVtils • https://yvtils.net"
                   },
                   "timestamp": "${{ github.event.head_commit.timestamp || github.event.created_at }}"
+                }
+              ],
+              "components": [
+                {
+                  "type": 1,
+                  "components": [
+                    {
+                      "type": 2,
+                      "style": 5,
+                      "label": "📦 Download ↗",
+                      "url": "https://yvtils.net/download"
+                    }
+                  ]
                 }
               ]
             }
