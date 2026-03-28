@@ -10,6 +10,12 @@ jobs:
   notify-discord:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Read version
+        run: echo "VERSION=$(cat version.txt)" >> $GITHUB_ENV
+
       - name: Send Discord Webhook
         uses: fjogeleit/http-request-action@v1
         with:
@@ -24,7 +30,7 @@ jobs:
               "embeds": [
                 {
                   "title": "Challenges Updates",
-                  "description": "**New update available!**\n\n**Changelog:**\n${{ github.event.head_commit.message }}",
+                  "description": "**New update available!**\nVersion ${{ env.VERSION }} is now available for download.\n\n**Changelog:**\n${{ github.event.head_commit.message }}",
                   "color": 5763719,
                   "footer": {
                     "text": "Challenges • https://smp-modcraft.de/plugins/challenge"
