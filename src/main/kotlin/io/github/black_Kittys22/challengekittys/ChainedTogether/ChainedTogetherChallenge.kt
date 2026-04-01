@@ -746,8 +746,6 @@ class ChainedTogetherChallenge(private val plugin: Main) : Listener {
         player.sendMessage(Component.text("⛓ Du darfst das nicht!", NamedTextColor.RED))
     }
 
-    // ── Hilfsmethoden ─────────────────────────────────────────────────────────
-
     private fun cancelWithBar(event: Cancellable, player: Player, msg: String) {
         event.isCancelled = true
         player.sendMessage(Component.text("⛓ $msg", NamedTextColor.RED))
