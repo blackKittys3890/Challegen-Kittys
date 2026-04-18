@@ -4,38 +4,44 @@ on:
   push:
     branches:
       - master
-  workflow_dispatch:
 
 jobs:
   notify-discord:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repo
-        uses: fjogeleit/http-request-action@v1
+        uses: actions/checkout@v4
 
       - name: Read version
-        run: echo "VERSION=$(cat version.txt)" >> $GITHUB_ENV
+        run: |
+          if [ -f version.txt ]; then
+            echo "VERSION=$(cat version.txt)" >> $GITHUB_ENV
+          else
+            echo "VERSION=unknown" >> $GITHUB_ENV
+          fi
 
-      - name: Send Discord Webhook
-        uses: fjogeleit/http-request-action@v1
-        with:
-          url: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          method: POST
-          contentType: 'application/json'
-          data: |
-            {
-              "content": "<@&1486792059389083678>",
-              "username": "Challenge Plugin",
-              "avatar_url": "https://smp-modcraft.de/challenges.png",
-              "embeds": [
-                {
-                  "title": "Challenges Updates",
-                  "description": "**New update available!**\nVersion ${{ env.VERSION }} is now available for download.\n\n**Changelog:**\n${{ github.event.head_commit.message }}",
-                  "color": 5763719,
-                  "footer": {
-                    "text": "Challenges • https://smp-modcraft.de/plugins/challenge"
-                  },
-                  "timestamp": "${{ github.event.head_commit.timestamp || github.event.created_at }}"
+      - name: Set commit message
+        run: |
+          echo "MESSAGE=${{ github.event.head_commit.message || 'No commit message' }}" >> $GITHUB_ENV
+
+      - name: Send Discord Webhook (safe)
+        run: |
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d "{
+            \"content\": \"<@&1486792059389083678>\",
+            \"username\": \"Challenge Plugin\",
+            \"avatar_url\": \"https://smp-modcraft.de/challenges.png\",
+            \"embeds\": [
+              {
+                \"title\": \"Challenges Update\",
+                \"description\": \"**New update available!**\\n\\nVersion: **${VERSION}**\\n\\n**Changelog:**\\n${MESSAGE}\",
+                \"color\": 5763719,
+                \"footer\": {
+                  \"text\": \"Challenges • https://smp-modcraft.de/plugins/challenge\"
                 }
-              ]
-            }
+              }
+            ]
+          }" \
+          ${{ secrets.DISCORD_WEBHOOK_URL }}
