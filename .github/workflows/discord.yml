@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: fjogeleit/http-request-action@v1
 
       - name: Read version
         run: echo "VERSION=$(cat version.txt)" >> $GITHUB_ENV
