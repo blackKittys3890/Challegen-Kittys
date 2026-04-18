@@ -30,6 +30,7 @@ class ChallengeManager(private val plugin: Main) : Listener {
 
         val isAnyMBActive = plugin.monsterBattleChallenge.isFarmingPhase || plugin.monsterBattleChallenge.isArenaPhase
 
+        inv.setItem(0, createItem(Material.CLOCK, "Relay Challenge", plugin.isRelayChallengeActive))
         inv.setItem(10, createItem(Material.GRASS_BLOCK,          "Chunk Challenge",      plugin.isChunkChallengeSelected))
         inv.setItem(12, createItem(Material.ZOMBIE_HEAD,           "Monster Battle",       isAnyMBActive))
         inv.setItem(4,  createItem(Material.CREEPER_HEAD,          "Mob Drop Challenge",   plugin.isMobDropChallengeActive))
@@ -46,7 +47,7 @@ class ChallengeManager(private val plugin: Main) : Listener {
         inv.setItem(32, createItem(Material.ZOMBIE_SPAWN_EGG,      "Mob Randomizer",       plugin.isMobRandomizerActive))
 
         // ─── Chained Together ─────────────────────────────────────────────────
-        inv.setItem(2,  createItem(Material.CHAIN,                 "Chained Together",     plugin.isChainedTogetherActive))
+        inv.setItem(2,  createItem(Material.IRON_CHAIN,                 "Chained Together",     plugin.isChainedTogetherActive))
 
         // ─── NEU: Swap Keys ───────────────────────────────────────────────────
         inv.setItem(8,  createItem(Material.FEATHER,               "Swap Keys",            plugin.isSwapKeysChallengeActive))
@@ -241,6 +242,16 @@ class ChallengeManager(private val plugin: Main) : Listener {
                         plugin.monsterBattleChallenge.startChallenge(30)
                     }
                 }
+                0 -> {
+                    if (plugin.isRelayChallengeActive) {
+                        plugin.relayChallenge.stop()
+                        plugin.isRelayChallengeActive = false
+                    } else {
+                        plugin.relayChallenge.start()
+                        plugin.isRelayChallengeActive = plugin.relayChallenge.isActive
+                    }
+                    plugin.saveConfig()
+                }
                 14 -> plugin.isSharedInventoryActive = !plugin.isSharedInventoryActive
                 16 -> { openLuegenbattleGUI(player); return }
                 20 -> {
@@ -388,6 +399,11 @@ class ChallengeManager(private val plugin: Main) : Listener {
         lore.add(Component.text(statusText, statusColor).decoration(TextDecoration.ITALIC, false))
 
         when (name) {
+            "Relay Challenge" -> {
+                lore.add(Component.text("Immer nur 1 Spieler ist aktiv!", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
+                lore.add(Component.text("Alle anderen schauen per Spectator zu.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
+                lore.add(Component.text("Alle 2 Min. wird der Spielstand übergeben.", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+            }
             "Monster Battle" -> {
                 lore.add(Component.text("Linksklick: Start (30m) / Stop", NamedTextColor.GRAY))
             }

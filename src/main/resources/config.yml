@@ -1,3 +1,9 @@
+discord:
+  token: "DEIN_DISCORD_BOT_TOKEN_HIER"
+  guild-id: "DEINE_DISCORD_GUILD_ID_HIER"
+  voice-channel-id: "DEINE_DISCORD_VOICE_CHANNEL_ID_HIER"
+  linked-players:
+
 bedrock-challenge:
   spawn-locations:
     - "void,0.5,100,0.5"

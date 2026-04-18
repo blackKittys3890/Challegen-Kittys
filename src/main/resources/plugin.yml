@@ -10,6 +10,9 @@ commands:
   backpack:
     description: Öffnet das globale Backpack
     aliases: [ bp ]
+  link:
+    description: Verknüpft deinen Minecraft-Account mit Discord
+    usage: /link
   exempt:
     description: Befreit einen Spieler von allen Challenges
     permission: challenge.exempt
@@ -39,6 +42,11 @@ commands:
   ch:
     description: Wähle deine Challenges aus.
     aliases: [challenges]
+
+  superchallenges:
+    description: Öffnet das Super-Challenges Menü
+    permission: challenge.admin
+    aliases: [ sc ]
   settings:
     description: Ändere KeepInventory und andere Welt-Optionen.
   shareinv:

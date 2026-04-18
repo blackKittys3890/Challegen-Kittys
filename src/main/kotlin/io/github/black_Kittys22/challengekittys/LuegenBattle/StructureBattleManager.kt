@@ -47,7 +47,7 @@ class StructureBattleManager(private val plugin: Main) {
             Material.BOOKSHELF, Material.CRAFTING_TABLE, Material.FURNACE,
             Material.RAIL, Material.POWERED_RAIL, Material.DETECTOR_RAIL, Material.ACTIVATOR_RAIL,
             Material.LADDER, Material.TORCH, Material.WALL_TORCH, Material.REDSTONE_TORCH,
-            Material.IRON_BARS, Material.GLASS_PANE, Material.CHAIN,
+            Material.IRON_BARS, Material.GLASS_PANE,
             Material.COAL_ORE, Material.IRON_ORE, Material.GOLD_ORE, Material.DIAMOND_ORE,
             Material.OBSIDIAN, Material.CRYING_OBSIDIAN,
             Material.SPONGE, Material.WET_SPONGE,

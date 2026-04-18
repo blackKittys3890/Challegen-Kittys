@@ -28,12 +28,17 @@ import io.github.black_Kittys22.challengekittys.LuegenBattle.StructureDeathListe
 import io.github.black_Kittys22.challengekittys.SharedInventoryChallenge.SharedInvListener
 import io.github.black_Kittys22.challengekittys.AllAchievments.AllAchievments
 import io.github.black_Kittys22.challengekittys.ChainedTogether.ChainedTogetherChallenge
+import io.github.black_Kittys22.challengekittys.RelayChallenge.RelayChallenge
 import io.github.black_Kittys22.challengekittys.Challenges.SwapKeysChallenge
+import io.github.black_Kittys22.challengekittys.Commands.LinkCommand
 import io.github.black_Kittys22.challengekittys.Commands.WarnCommand
 import io.github.black_Kittys22.challengekittys.MobForceBattle.MobForceBattleCommand
 import io.github.black_Kittys22.challengekittys.MobForceBattle.MobForceBattleListener
 import io.github.black_Kittys22.challengekittys.MobForceBattle.MobForceBattleManager
 import io.github.black_Kittys22.challengekittys.MobForceBattle.MobForceRankingGUI
+import io.github.black_Kittys22.challengekittys.RelayChallenge.DiscordVoiceManager
+import io.github.black_Kittys22.challengekittys.SuperChallenges.FullNetheriteBeaconChallenge
+import io.github.black_Kittys22.challengekittys.SuperChallenges.SuperChallengeManager
 import io.github.black_Kittys22.challengekittys.Timer.TimerColorGUI
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -56,6 +61,7 @@ class Main : JavaPlugin(), Listener {
     lateinit var mobDropChallenge: MobDropChallenge
     var isMobDropChallengeActive = false
     lateinit var manager: ChallengeManager
+    lateinit var discordVoiceManager: DiscordVoiceManager
     lateinit var structureBattleManager: StructureBattleManager
     lateinit var allItemsListener: AllItemsListener
     lateinit var craftingRandomizer: CraftingRandomizer
@@ -73,11 +79,15 @@ class Main : JavaPlugin(), Listener {
     var isChainedTogetherActive = false
     lateinit var randomizerChallenge: RandomizerChallenge
     var isRandomizerActive = false
+    lateinit var linkCommand: LinkCommand
     lateinit var backpackInventory: Inventory
+    lateinit var relayChallenge: RelayChallenge
+    var isRelayChallengeActive = false
     var isTimerAutoStartEnabled = true
     var isChunkChallengeSelected = false
     val exemptPlayers = mutableSetOf<UUID>()
     var isDamageClearInventoryActive = false
+    val token = config.getString("discord.token")
     var isDeadSyncActive = false
     val timerColorGUI = TimerColorGUI(this)
     var isSharedInventoryActive = false
@@ -93,6 +103,10 @@ class Main : JavaPlugin(), Listener {
     lateinit var halfHeartChallenge: HalfHeartChallenge
     lateinit var bedrockChallenge: BedrockChallenge
     lateinit var mobForceBattleManager: MobForceBattleManager
+    lateinit var superChallengeManager: SuperChallengeManager
+    lateinit var fullNetheriteBeaconChallenge: FullNetheriteBeaconChallenge
+
+
 
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
@@ -101,6 +115,24 @@ class Main : JavaPlugin(), Listener {
 
     override fun onEnable() {
         saveDefaultConfig()
+
+        // ── RelayChallenge: ZUERST initialisieren, dann registrieren ──────────
+        relayChallenge = RelayChallenge(this)
+        isRelayChallengeActive = config.getBoolean("challenges.relay.active", false)
+        server.pluginManager.registerEvents(relayChallenge, this)
+
+        discordVoiceManager = DiscordVoiceManager(this)
+        discordVoiceManager.init()
+
+        linkCommand = LinkCommand(this)
+
+        if (token == null || token == "DEIN_TOKEN_HIER") {
+            logger.warning("Discord Bot deaktiviert: Token fehlt")
+        } else {
+            DiscordBot.start(token, linkCommand, discordVoiceManager)
+            logger.info("Discord Bot gestartet")
+        }
+
         mobDropChallenge = MobDropChallenge(this)
         isMobDropChallengeActive = config.getBoolean("challenges.mobDrop.active", false)
         server.pluginManager.registerEvents(mobDropChallenge, this)
@@ -149,6 +181,11 @@ class Main : JavaPlugin(), Listener {
         allAchievments = AllAchievments(this)
         isSharedAdvancementsActive = config.getBoolean("challenges.sharedAdvancements.active", false)
         server.pluginManager.registerEvents(allAchievments, this)
+        fullNetheriteBeaconChallenge = FullNetheriteBeaconChallenge(this)
+        server.pluginManager.registerEvents(fullNetheriteBeaconChallenge, this)
+        superChallengeManager = SuperChallengeManager(this)
+        server.pluginManager.registerEvents(superChallengeManager, this)
+
 
         val exemptList = config.getStringList("exemptPlayers")
         exemptList.forEach { uuidStr ->
@@ -163,13 +200,18 @@ class Main : JavaPlugin(), Listener {
     }
 
     override fun onDisable() {
+        DiscordBot.stop()
+        logger.info("Discord Bot gestoppt")
         config.set("exemptPlayers", exemptPlayers.map { it.toString() })
+        config.set("challenges.relay.active", isRelayChallengeActive)
+        if (::relayChallenge.isInitialized && relayChallenge.isActive) relayChallenge.stop()
         config.set("challenges.craftingRandomizer.active", isCraftingRandomizerActive)
         craftingRandomizer.saveMappings()
         config.set("challenges.halfHeart.active", isHalfHeartChallengeActive)
         config.set("timer.time", timer.timeSeconds)
         config.set("challenges.mobRandomizer.active", isMobRandomizerActive)
         mobRandomizerChallenge.saveMappings()
+        discordVoiceManager.shutdown()
         config.set("challenges.mobDrop.active", isMobDropChallengeActive)
         config.set("timer.autoStart", isTimerAutoStartEnabled)
         config.set("challenges.allItems.active", isAllItemsChallengeActive)
@@ -178,13 +220,9 @@ class Main : JavaPlugin(), Listener {
         config.set("challenges.infiniteLoop.active", isInfiniteLoopActive)
         config.set("challenges.randomizer.active", isRandomizerActive)
         config.set("challenges.swapKeys.active", isSwapKeysChallengeActive)
-        // Alle laufenden Loop-Tasks stoppen
         if (::infiniteLoopChallenge.isInitialized) infiniteLoopChallenge.stopAllTasks()
-
         if (::allMobsListener.isInitialized) allMobsListener.saveProgress()
-
         saveBackpack()
-
         if (::allItemsListener.isInitialized) allItemsListener.saveProgress()
         saveConfig()
     }
@@ -213,6 +251,7 @@ class Main : JavaPlugin(), Listener {
         getCommand("spec")?.setExecutor(specManager)
         server.pluginManager.registerEvents(specManager, this)
         getCommand("backpack")?.setExecutor(bpCmd)
+        getCommand("link")?.setExecutor(linkCommand)
         getCommand("warn")?.setExecutor(WarnCommand(this))
         getCommand("bp")?.setExecutor(bpCmd)
         val mfbCmd = MobForceBattleCommand(this)
@@ -238,6 +277,10 @@ class Main : JavaPlugin(), Listener {
         getCommand("bc")?.setExecutor(BCCommand(this))
         val sInv = SharedInvCommand(this)
         getCommand("shareinv")?.setExecutor(sInv)
+        val scExec = org.bukkit.command.CommandExecutor { s, _, _, _ ->
+            if (s is Player) superChallengeManager.openMainGUI(s); true
+        }
+        getCommand("superchallenges")?.setExecutor(scExec)
         getCommand("shareinv")?.tabCompleter = sInv
         getCommand("skipitem")?.setExecutor { sender, _, _, _ ->
             if (sender.hasPermission("challenge.skip")) {
