@@ -1,4 +1,4 @@
-name: Discord Notify
+name: Discord Notify (Bot)
 
 on:
   push:
@@ -25,29 +25,21 @@ jobs:
         run: |
           echo "MESSAGE=${{ github.event.head_commit.message || 'No commit message' }}" >> $GITHUB_ENV
 
-      - name: Send Discord Webhook
+      - name: Send Discord message via Bot
         run: |
-          JSON=$(jq -n \
-            --arg version "$VERSION" \
-            --arg msg "$MESSAGE" \
-            --arg role "<@&1486792059389083678>" \
-            '{
-              content: $role,
-              username: "Challenge Plugin",
-              avatar_url: "https://smp-modcraft.de/challenges.png",
-              embeds: [
-                {
-                  title: "Challenges Update",
-                  description: ("**New update available!**\n\nVersion: **" + $version + "**\n\n**Changelog:**\n" + $msg),
-                  color: 5763719,
-                  footer: {
-                    text: "Challenges • https://smp-modcraft.de/plugins/challenge"
-                  }
+          curl -X POST "https://discord.com/api/v10/channels/1486793066890399795/messages" \
+          -H "Authorization: Bot ${{ secrets.DISCORD_BOT_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d "{
+            \"content\": \"<@&1486792059389083678>\",
+            \"embeds\": [
+              {
+                \"title\": \"Challenges Update\",
+                \"description\": \"**New update available!**\\n\\nVersion: **${VERSION}**\\n\\n**Changelog:**\\n${MESSAGE}\",
+                \"color\": 5763719,
+                \"footer\": {
+                  \"text\": \"Challenges • https://smp-modcraft.de/plugins/challenge\"
                 }
-              ]
-            }')
-          
-          curl -H "Content-Type: application/json" \
-          -X POST \
-          -d "$JSON" \
-          ${{ secrets.DISCORD_WEBHOOK_URL }}
+              }
+            ]
+          }"
