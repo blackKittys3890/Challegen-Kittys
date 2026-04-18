@@ -48,7 +48,6 @@ class FullNetheriteBeaconChallenge(private val plugin: Main) : Listener {
                 return@Runnable
             }
 
-            // Pyramide ist Netherite → Advancement bleibt, Challenge complete
             if (isActive && !isCompleted) {
                 complete(player)
             }
