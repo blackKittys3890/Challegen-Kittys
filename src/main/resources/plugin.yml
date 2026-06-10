@@ -1,10 +1,15 @@
 name: Challenge_Kittys
 main: io.github.black_Kittys22.challengekittys.Main
-version: 4.1
+version: 5.0
 api-version: 1.21
 authors:
   - black_Kittys
 description: "Challenges Plugin für Minecraft Server. Viele inspiriert von BastiGHG"
+
+
+default-world-generator-settings: {}
+generators:
+  chunk_challenge_world: io.github.black_Kittys22.challengekittys.ChunkChallenge.ChunkMaterialGenerator
 
 commands:
   backpack:
@@ -69,6 +74,9 @@ commands:
     description: MobForceBattle verwalten
     usage: /mobforce <start|stop|reset|status|joker|team>
     permission: challenge.mobforce
+  blocklist:
+    description: Öffnet die Block-Verwaltung
+    permission: challenge.blocklist
 
 permissions:
   challenge.monsterbattle:

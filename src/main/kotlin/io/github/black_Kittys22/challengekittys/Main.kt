@@ -85,6 +85,9 @@ class Main : JavaPlugin(), Listener {
     var isRelayChallengeActive = false
     var isTimerAutoStartEnabled = true
     var isChunkChallengeSelected = false
+    var isEffectsChunkActive = false
+    lateinit var effectsChallenge: io.github.black_Kittys22.challengekittys.ChunkChallenge.effects.EffectsChallenge
+    // chunk challenge uses the original ChunkListener (real block changes)
     val exemptPlayers = mutableSetOf<UUID>()
     var isDamageClearInventoryActive = false
     val token = config.getString("discord.token")
@@ -115,6 +118,9 @@ class Main : JavaPlugin(), Listener {
 
     override fun onEnable() {
         saveDefaultConfig()
+
+        // Effects-Challenge initialisieren (noch nicht automatisch starten)
+        effectsChallenge = io.github.black_Kittys22.challengekittys.ChunkChallenge.effects.EffectsChallenge(this)
 
         // ── RelayChallenge: ZUERST initialisieren, dann registrieren ──────────
         relayChallenge = RelayChallenge(this)
@@ -196,6 +202,12 @@ class Main : JavaPlugin(), Listener {
         registerCommands()
         registerListeners()
 
+        // Falls Effects-Challenge in Config aktiv ist, starte sie
+        isEffectsChunkActive = config.getBoolean("challenges.effectsChunk.active", false)
+        if (isEffectsChunkActive) {
+            effectsChallenge.start()
+        }
+
         logger.info("§a[ChallengeSystem] Geladen!")
     }
 
@@ -220,6 +232,12 @@ class Main : JavaPlugin(), Listener {
         config.set("challenges.infiniteLoop.active", isInfiniteLoopActive)
         config.set("challenges.randomizer.active", isRandomizerActive)
         config.set("challenges.swapKeys.active", isSwapKeysChallengeActive)
+        // Persist effects-challenge flag
+        config.set("challenges.effectsChunk.active", isEffectsChunkActive)
+        // Stop effects challenge to cleanup potion effects
+        if (::effectsChallenge.isInitialized && effectsChallenge.isActive) {
+            try { effectsChallenge.stop() } catch (_: Exception) {}
+        }
         if (::infiniteLoopChallenge.isInitialized) infiniteLoopChallenge.stopAllTasks()
         if (::allMobsListener.isInitialized) allMobsListener.saveProgress()
         saveBackpack()
@@ -263,6 +281,10 @@ class Main : JavaPlugin(), Listener {
         getCommand("challenges")?.setExecutor(chExec)
         getCommand("lb")?.setExecutor(LBCommand(this))
         val tCmd = TimerCommand(this)
+        // In registerCommands():
+        val blocklistGui = BlocklistGuiCommand(this)
+        getCommand("blocklist")?.setExecutor(blocklistGui)
+        server.pluginManager.registerEvents(BlocklistGuiListener(this, blocklistGui), this)
         getCommand("timer")?.setExecutor(tCmd)
         getCommand("timer")?.tabCompleter = tCmd
         val mbCmd = MonsterBattleCommand(this)
@@ -296,6 +318,7 @@ class Main : JavaPlugin(), Listener {
         pm.registerEvents(manager, this)
         pm.registerEvents(TimerListener(this), this)
         pm.registerEvents(GuiListener(this), this)
+        // Original ChunkListener registrieren (real block changes)
         pm.registerEvents(ChunkListener(this), this)
         pm.registerEvents(DamageListener(this), this)
         pm.registerEvents(DeathListener(this), this)
@@ -338,7 +361,7 @@ class Main : JavaPlugin(), Listener {
     }
 
     fun resetPlayerBorder(player: Player) {
-        player.worldBorder.size = 60000000.0
+        player.worldBorder = null
     }
 
     private fun setupArenaWorld() {

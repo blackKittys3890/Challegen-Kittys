@@ -9,23 +9,26 @@ class MobProtectionListener(private val plugin: Main) : Listener {
 
     @EventHandler
     fun onMobDamage(event: EntityDamageEvent) {
-        // 1. Nur ausführen, wenn die Chunk Challenge aktiv ist
         if (!plugin.isChunkChallengeSelected) return
+        if (event.entity !is Monster) return
 
-        // 2. Nur für Monster (Skelette, Zombies, Creeper, etc.)
-        if (event.entity is Monster) {
+        val mobId = event.entity.uniqueId.toString()
 
-            // 3. AUSNAHMEN: Was soll Mobs weiterhin töten?
-            // Wenn sie durch Sonne (FIRE_TICK) oder Feuer verbrennen, lassen wir das zu.
-            if (event.cause == EntityDamageEvent.DamageCause.FIRE_TICK ||
-                event.cause == EntityDamageEvent.DamageCause.FIRE ||
-                event.cause == EntityDamageEvent.DamageCause.LAVA) {
-                return
-            }
+        // Challenge-Mobs (in chunkEntityMap) bekommen KEINEN Schutz – die soll der Spieler töten!
+        if (plugin.chunkEntityMap.containsKey(mobId)) return
 
-            // 4. Alle anderen Schadensarten (z.B. Ertrinken, Fallschaden, Erstickung in Blöcken)
-            // blockieren wir, damit die Mobs in ihren Chunks "überleben".
-            event.isCancelled = true
+        // Normale Mobs: Spieler-Schaden weiterhin erlauben
+        if (event.cause == EntityDamageEvent.DamageCause.ENTITY_ATTACK ||
+            event.cause == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK ||
+            event.cause == EntityDamageEvent.DamageCause.PROJECTILE ||
+            event.cause == EntityDamageEvent.DamageCause.MAGIC ||
+            event.cause == EntityDamageEvent.DamageCause.FIRE_TICK ||
+            event.cause == EntityDamageEvent.DamageCause.FIRE ||
+            event.cause == EntityDamageEvent.DamageCause.LAVA) {
+            return
         }
+
+        // Alles andere (Fallschaden, Ertrinken, Erstickung) blockieren
+        event.isCancelled = true
     }
 }

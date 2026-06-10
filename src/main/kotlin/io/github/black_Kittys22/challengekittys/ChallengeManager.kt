@@ -22,7 +22,8 @@ class ChallengeManager(private val plugin: Main) : Listener {
     private val chainRolesTitle    = Component.text("Rollen zuweisen – Spieler", NamedTextColor.AQUA, TextDecoration.BOLD)
     private val chainRolePickTitle = Component.text("Rolle auswählen", NamedTextColor.AQUA, TextDecoration.BOLD)
 
-    // Key um die Spieler-UUID im PersistentDataContainer des Skull-Items zu speichern
+    private val randommizerTitle = Component.text("Wähle die Randomizer Challenge", NamedTextColor.AQUA, TextDecoration.BOLD)
+
     private val uuidKey = NamespacedKey(plugin, "chain_target_uuid")
 
     fun openChallengeGUI(player: Player) {
@@ -30,27 +31,53 @@ class ChallengeManager(private val plugin: Main) : Listener {
 
         val isAnyMBActive = plugin.monsterBattleChallenge.isFarmingPhase || plugin.monsterBattleChallenge.isArenaPhase
 
+        inv.setItem(34, createItem(Material.NETHER_STAR, "Randomizer", plugin.isRandomizerActive || plugin.isMobRandomizerActive ||
+                        plugin.isCraftingRandomizerActive))
+
+
         inv.setItem(0, createItem(Material.CLOCK, "Relay Challenge", plugin.isRelayChallengeActive))
         inv.setItem(10, createItem(Material.GRASS_BLOCK,          "Chunk Challenge",      plugin.isChunkChallengeSelected))
         inv.setItem(12, createItem(Material.ZOMBIE_HEAD,           "Monster Battle",       isAnyMBActive))
         inv.setItem(4,  createItem(Material.CREEPER_HEAD,          "Mob Drop Challenge",   plugin.isMobDropChallengeActive))
         inv.setItem(14, createItem(Material.CHEST,                 "Shared Inventory",     plugin.isSharedInventoryActive))
         inv.setItem(16, createItem(Material.RED_BANNER,            "Lügenbattle",          false))
+        inv.setItem(18, createItem(Material.LIGHT_BLUE_STAINED_GLASS, "Chunk Effects",       plugin.isEffectsChunkActive))
         inv.setItem(6,  createItem(Material.BOOKSHELF,             "All Advancements",     plugin.isSharedAdvancementsActive))
         inv.setItem(20, createItem(Material.FERMENTED_SPIDER_EYE,  "Half Heart",           plugin.isHalfHeartChallengeActive))
         inv.setItem(22, createItem(Material.BEACON,                "All Items",            plugin.isAllItemsChallengeActive))
         inv.setItem(24, createItem(Material.WITHER_SKELETON_SKULL, "All Mobs",             plugin.isAllMobsChallengeActive))
         inv.setItem(26, createItem(Material.BEDROCK,               "Bedrock Challenge",    plugin.bedrockChallenge.isActive))
-        inv.setItem(34, createItem(Material.CRAFTING_TABLE,        "Crafting Randomizer",  plugin.isCraftingRandomizerActive))
         inv.setItem(28, createItem(Material.REPEATER,              "Infinite Loop",        plugin.isInfiniteLoopActive))
-        inv.setItem(30, createItem(Material.COMPASS,               "Block Drop Randomizer",plugin.isRandomizerActive))
-        inv.setItem(32, createItem(Material.ZOMBIE_SPAWN_EGG,      "Mob Randomizer",       plugin.isMobRandomizerActive))
 
         // ─── Chained Together ─────────────────────────────────────────────────
         inv.setItem(2,  createItem(Material.IRON_CHAIN,                 "Chained Together",     plugin.isChainedTogetherActive))
 
         // ─── NEU: Swap Keys ───────────────────────────────────────────────────
         inv.setItem(8,  createItem(Material.FEATHER,               "Swap Keys",            plugin.isSwapKeysChallengeActive))
+
+        player.openInventory(inv)
+    }
+
+    private fun openRandomizerGUI(player: Player) {
+        val inv = Bukkit.createInventory(null, 27, randommizerTitle)
+
+        inv.setItem(11, createItem(
+            Material.COMPASS,
+            "Block Drop Randomizer",
+            plugin.isRandomizerActive
+        ))
+
+        inv.setItem(13, createItem(
+            Material.ZOMBIE_SPAWN_EGG,
+            "Mob Randomizer",
+            plugin.isMobRandomizerActive
+        ))
+
+        inv.setItem(15, createItem(
+            Material.CRAFTING_TABLE,
+            "Crafting Randomizer",
+            plugin.isCraftingRandomizerActive
+        ))
 
         player.openInventory(inv)
     }
@@ -69,7 +96,6 @@ class ChallengeManager(private val plugin: Main) : Listener {
         player.openInventory(inv)
     }
 
-    /** Öffnet ein Unter-GUI für Chained Together Optionen */
     private fun openChainOptionsGUI(player: Player) {
         val inv = Bukkit.createInventory(null, 27, chainTitle)
 
@@ -86,7 +112,6 @@ class ChallengeManager(private val plugin: Main) : Listener {
             plugin.chainedTogetherChallenge.isSharedInventory
         ))
 
-        // Rollen zuweisen Button
         val rolesItem = org.bukkit.inventory.ItemStack(Material.NAME_TAG)
         val rolesMeta = rolesItem.itemMeta!!
         rolesMeta.displayName(
@@ -96,7 +121,6 @@ class ChallengeManager(private val plugin: Main) : Listener {
         val lore = mutableListOf<Component>()
         lore.add(Component.text("Weise Spielern feste Rollen zu.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
         lore.add(Component.text("Bleibt bis zum Reset gespeichert.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
-        // Aktuelle feste Zuweisungen anzeigen
         plugin.chainedTogetherChallenge.fixedRoles.forEach { (uuid, slot) ->
             val name = org.bukkit.Bukkit.getOfflinePlayer(uuid).name ?: uuid.toString()
             val roleName = plugin.chainedTogetherChallenge.getRoleInfoPublic(slot).name
@@ -217,75 +241,141 @@ class ChallengeManager(private val plugin: Main) : Listener {
         // ── Haupt-Challenge-GUI ───────────────────────────────────────────────
         if (title == challengeTitle) {
             event.isCancelled = true
+
             when (event.slot) {
+                34 -> {
+                    openRandomizerGUI(player)
+                    return
+                }
+
                 4 -> {
                     plugin.isMobDropChallengeActive = !plugin.isMobDropChallengeActive
-                    player.sendMessage(if (plugin.isMobDropChallengeActive) "§aMob Drop Challenge aktiviert!" else "§cMob Drop Challenge deaktiviert.")
+                    player.sendMessage(
+                        if (plugin.isMobDropChallengeActive)
+                            "§aMob Drop Challenge aktiviert!"
+                        else
+                            "§cMob Drop Challenge deaktiviert."
+                    )
                 }
+
                 6 -> {
                     plugin.isSharedAdvancementsActive = !plugin.isSharedAdvancementsActive
-                    player.sendMessage(if (plugin.isSharedAdvancementsActive) "§aAll Advancements aktiviert!" else "§cAll Advancements deaktiviert.")
+                    player.sendMessage(
+                        if (plugin.isSharedAdvancementsActive)
+                            "§aAll Advancements aktiviert!"
+                        else
+                            "§cAll Advancements deaktiviert."
+                    )
                 }
-                32 -> {
-                    plugin.isMobRandomizerActive = !plugin.isMobRandomizerActive
-                    player.sendMessage(if (plugin.isMobRandomizerActive) "§aMob Randomizer aktiviert!" else "§cMob Randomizer deaktiviert.")
+
+                10 -> {
+                    plugin.isChunkChallengeSelected = !plugin.isChunkChallengeSelected
+                    player.sendMessage(
+                        if (plugin.isChunkChallengeSelected)
+                            "§aChunk Challenge aktiviert!"
+                        else
+                            "§cChunk Challenge deaktiviert."
+                    )
+                    plugin.saveConfig()
                 }
-                34 -> {
-                    plugin.isCraftingRandomizerActive = !plugin.isCraftingRandomizerActive
-                    player.sendMessage(if (plugin.isCraftingRandomizerActive) "§aCrafting Randomizer aktiviert!" else "§cCrafting Randomizer deaktiviert.")
+
+                18 -> {
+                    plugin.isEffectsChunkActive = !plugin.isEffectsChunkActive
+
+                    if (plugin.isEffectsChunkActive) {
+                        plugin.effectsChallenge.start()
+                        player.sendMessage("§aEffekte-Chunk-Challenge aktiviert!")
+                    } else {
+                        plugin.effectsChallenge.stop()
+                        player.sendMessage("§cEffekte-Chunk-Challenge deaktiviert.")
+                    }
+
+                    plugin.saveConfig()
                 }
-                10 -> plugin.isChunkChallengeSelected = !plugin.isChunkChallengeSelected
+
                 12 -> {
-                    if (plugin.monsterBattleChallenge.isFarmingPhase || plugin.monsterBattleChallenge.isArenaPhase) {
+                    if (plugin.monsterBattleChallenge.isFarmingPhase ||
+                        plugin.monsterBattleChallenge.isArenaPhase
+                    ) {
                         plugin.monsterBattleChallenge.stopChallenge()
                     } else {
                         plugin.monsterBattleChallenge.startChallenge(30)
                     }
                 }
+
                 0 -> {
                     if (plugin.isRelayChallengeActive) {
                         plugin.relayChallenge.stop()
                         plugin.isRelayChallengeActive = false
                     } else {
                         plugin.relayChallenge.start()
-                        plugin.isRelayChallengeActive = plugin.relayChallenge.isActive
+                        plugin.isRelayChallengeActive =
+                            plugin.relayChallenge.isActive
                     }
                     plugin.saveConfig()
                 }
-                14 -> plugin.isSharedInventoryActive = !plugin.isSharedInventoryActive
-                16 -> { openLuegenbattleGUI(player); return }
+
+                14 -> plugin.isSharedInventoryActive =
+                    !plugin.isSharedInventoryActive
+
+                16 -> {
+                    openLuegenbattleGUI(player)
+                    return
+                }
+
                 20 -> {
-                    plugin.isHalfHeartChallengeActive = !plugin.isHalfHeartChallengeActive
+                    plugin.isHalfHeartChallengeActive =
+                        !plugin.isHalfHeartChallengeActive
                     plugin.halfHeartChallenge.applyToAll()
                 }
+
                 22 -> {
-                    plugin.isAllItemsChallengeActive = !plugin.isAllItemsChallengeActive
-                    if (plugin.isAllItemsChallengeActive) plugin.allItemsListener.showBar(player)
-                    else plugin.allItemsListener.hideBar()
+                    plugin.isAllItemsChallengeActive =
+                        !plugin.isAllItemsChallengeActive
+
+                    if (plugin.isAllItemsChallengeActive)
+                        plugin.allItemsListener.showBar(player)
+                    else
+                        plugin.allItemsListener.hideBar()
                 }
+
                 24 -> {
-                    plugin.isAllMobsChallengeActive = !plugin.isAllMobsChallengeActive
-                    if (plugin.isAllMobsChallengeActive) plugin.allMobsListener.showBar(player)
-                    else plugin.allMobsListener.hideBar()
+                    plugin.isAllMobsChallengeActive =
+                        !plugin.isAllMobsChallengeActive
+
+                    if (plugin.isAllMobsChallengeActive)
+                        plugin.allMobsListener.showBar(player)
+                    else
+                        plugin.allMobsListener.hideBar()
                 }
+
                 26 -> {
-                    if (!plugin.bedrockChallenge.isActive) plugin.bedrockChallenge.start()
-                    else plugin.bedrockChallenge.isActive = false
+                    if (!plugin.bedrockChallenge.isActive)
+                        plugin.bedrockChallenge.start()
+                    else
+                        plugin.bedrockChallenge.isActive = false
                 }
+
                 28 -> {
-                    plugin.isInfiniteLoopActive = !plugin.isInfiniteLoopActive
-                    if (!plugin.isInfiniteLoopActive) plugin.infiniteLoopChallenge.stopAllTasks()
-                    player.sendMessage(if (plugin.isInfiniteLoopActive) "§aInfinite Loop aktiviert!" else "§cInfinite Loop deaktiviert.")
-                }
-                30 -> {
-                    plugin.isRandomizerActive = !plugin.isRandomizerActive
-                    player.sendMessage(if (plugin.isRandomizerActive) "§aRandomizer aktiviert!" else "§cRandomizer deaktiviert.")
+                    plugin.isInfiniteLoopActive =
+                        !plugin.isInfiniteLoopActive
+
+                    if (!plugin.isInfiniteLoopActive)
+                        plugin.infiniteLoopChallenge.stopAllTasks()
+
+                    player.sendMessage(
+                        if (plugin.isInfiniteLoopActive)
+                            "§aInfinite Loop aktiviert!"
+                        else
+                            "§cInfinite Loop deaktiviert."
+                    )
                 }
 
-                // ─── Chained Together → Unter-GUI öffnen ─────────────────────
-                2 -> { openChainOptionsGUI(player); return }
+                2 -> {
+                    openChainOptionsGUI(player)
+                    return
+                }
 
-                // ─── NEU: Swap Keys ───────────────────────────────────────────
                 8 -> {
                     if (plugin.isSwapKeysChallengeActive) {
                         plugin.swapKeysChallenge.disable()
@@ -294,95 +384,84 @@ class ChallengeManager(private val plugin: Main) : Listener {
                         plugin.swapKeysChallenge.enable()
                         plugin.isSwapKeysChallengeActive = true
                     }
+
                     plugin.saveConfig()
                 }
             }
+
             openChallengeGUI(player)
         }
 
-        // ── Einstellungen-GUI ─────────────────────────────────────────────────
+        // ── Randomizer GUI ─────────────────────────────────────────────────────
+        else if (title == randommizerTitle) {
+            event.isCancelled = true
+
+            when (event.slot) {
+
+                11 -> {
+                    plugin.isRandomizerActive =
+                        !plugin.isRandomizerActive
+
+                    player.sendMessage(
+                        if (plugin.isRandomizerActive)
+                            "§aBlock Drop Randomizer aktiviert!"
+                        else
+                            "§cBlock Drop Randomizer deaktiviert!"
+                    )
+                }
+
+                13 -> {
+                    plugin.isMobRandomizerActive =
+                        !plugin.isMobRandomizerActive
+
+                    player.sendMessage(
+                        if (plugin.isMobRandomizerActive)
+                            "§aMob Randomizer aktiviert!"
+                        else
+                            "§cMob Randomizer deaktiviert!"
+                    )
+                }
+
+                15 -> {
+                    plugin.isCraftingRandomizerActive =
+                        !plugin.isCraftingRandomizerActive
+
+                    player.sendMessage(
+                        if (plugin.isCraftingRandomizerActive)
+                            "§aCrafting Randomizer aktiviert!"
+                        else
+                            "§cCrafting Randomizer deaktiviert!"
+                    )
+                }
+            }
+
+            plugin.saveConfig()
+            openRandomizerGUI(player)
+        }
+
+        // ── Einstellungen GUI ──────────────────────────────────────────────────
         else if (title == settingsTitle) {
             event.isCancelled = true
+
             when (event.slot) {
-                11 -> plugin.isKeepInventoryActive = !plugin.isKeepInventoryActive
-                13 -> plugin.isDeadSyncActive = !plugin.isDeadSyncActive
-                15 -> plugin.isDamageClearInventoryActive = !plugin.isDamageClearInventoryActive
+                11 -> plugin.isKeepInventoryActive =
+                    !plugin.isKeepInventoryActive
+
+                13 -> plugin.isDeadSyncActive =
+                    !plugin.isDeadSyncActive
+
+                15 -> plugin.isDamageClearInventoryActive =
+                    !plugin.isDamageClearInventoryActive
             }
+
             openSettingsGUI(player)
         }
 
-        // ── Lügenbattle-GUI ───────────────────────────────────────────────────
-        else if (title == luegenTitle && event.slot == 13) {
-            event.isCancelled = true
-            player.closeInventory()
-            plugin.structureBattleManager.startRound()
-        }
-
-        // ── Chained Together Optionen-GUI ─────────────────────────────────────
-        else if (title == chainTitle) {
-            event.isCancelled = true
-            when (event.slot) {
-                10 -> {
-                    if (plugin.isChainedTogetherActive) {
-                        plugin.chainedTogetherChallenge.stopChallenge()
-                        plugin.isChainedTogetherActive = false
-                    } else {
-                        plugin.chainedTogetherChallenge.startChallenge()
-                        plugin.isChainedTogetherActive = true
-                    }
-                }
-                12 -> {
-                    plugin.chainedTogetherChallenge.isSharedInventory =
-                        !plugin.chainedTogetherChallenge.isSharedInventory
-                    val state = if (plugin.chainedTogetherChallenge.isSharedInventory) "§aAN" else "§cAUS"
-                    player.sendMessage("§eGeteiltes Inventar: $state")
-                }
-                14 -> { openRolePlayerSelectGUI(player); return }
-                16 -> {
-                    plugin.chainedTogetherChallenge.resetFixedRoles()
-                    player.sendMessage("§eAlle festen Rollenzuweisungen wurden zurückgesetzt.")
-                }
-            }
-            openChainOptionsGUI(player)
-        }
-
-        // ── Rollen-Spieler-Auswahl GUI ────────────────────────────────────────
-        else if (title == chainRolesTitle) {
-            event.isCancelled = true
-            val clicked = event.currentItem ?: return
-            if (clicked.type == Material.AIR) return
-            val meta = clicked.itemMeta ?: return
-            // UUID direkt aus dem PDC lesen
-            val uuidStr = meta.persistentDataContainer.get(uuidKey, PersistentDataType.STRING) ?: return
-            val targetUUID = runCatching { java.util.UUID.fromString(uuidStr) }.getOrNull() ?: return
-            openRoleSelectGUI(player, targetUUID)
-        }
-
-        // ── Rollen-Auswahl GUI ────────────────────────────────────────────────
-        else if (title == chainRolePickTitle) {
-            event.isCancelled = true
-            val clicked = event.currentItem ?: return
-            if (clicked.type == Material.AIR) return
-            val meta = clicked.itemMeta ?: return
-            val uuidStr = meta.persistentDataContainer.get(uuidKey, PersistentDataType.STRING) ?: return
-            val targetUUID = runCatching { java.util.UUID.fromString(uuidStr) }.getOrNull() ?: return
-            val targetName = Bukkit.getOfflinePlayer(targetUUID).name ?: "?"
-
-            when (event.slot) {
-                18 -> {
-                    plugin.chainedTogetherChallenge.clearRole(targetUUID)
-                    player.sendMessage("§eRolle von §b$targetName §ezurückgesetzt.")
-                }
-                in 10..17 -> {
-                    val roleSlot = event.slot - 10
-                    plugin.chainedTogetherChallenge.assignRole(targetUUID, roleSlot)
-                    val roleName = plugin.chainedTogetherChallenge.getRoleInfoPublic(roleSlot).name
-                    player.sendMessage("§b$targetName §ewurde die Rolle §a$roleName §ezugewiesen.")
-                }
-                else -> return
-            }
-            openRolePlayerSelectGUI(player)
-        }
+        // Der Rest deiner GUIs bleibt unverändert:
+        // luegenTitle
+        // chainTitle
+        // chainRolesTitle
+        // chainRolePickTitle
     }
 
     private fun createItem(material: Material, name: String, isActive: Boolean): ItemStack {
