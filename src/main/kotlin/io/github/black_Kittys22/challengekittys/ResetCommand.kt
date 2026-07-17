@@ -56,6 +56,7 @@ class ResetCommand(private val plugin: Main) : CommandExecutor {
             plugin.mobDropChallenge.resetMap()
             plugin.mobRandomizerChallenge.resetAll()
             plugin.swapKeysChallenge.reset()
+            plugin.farbspurChallenge.reset()
             plugin.randomizerChallenge.resetAll()
             plugin.chainedTogetherChallenge.resetFixedRoles()
             plugin.updateTablist()

@@ -28,6 +28,7 @@ import io.github.black_Kittys22.challengekittys.LuegenBattle.StructureDeathListe
 import io.github.black_Kittys22.challengekittys.SharedInventoryChallenge.SharedInvListener
 import io.github.black_Kittys22.challengekittys.AllAchievments.AllAchievments
 import io.github.black_Kittys22.challengekittys.ChainedTogether.ChainedTogetherChallenge
+import io.github.black_Kittys22.challengekittys.Challenges.FarbspurChallenge
 import io.github.black_Kittys22.challengekittys.RelayChallenge.RelayChallenge
 import io.github.black_Kittys22.challengekittys.Challenges.SwapKeysChallenge
 import io.github.black_Kittys22.challengekittys.Commands.LinkCommand
@@ -92,6 +93,7 @@ class Main : JavaPlugin(), Listener {
     var isDamageClearInventoryActive = false
     val token = config.getString("discord.token")
     var isDeadSyncActive = false
+    lateinit var farbspurChallenge: FarbspurChallenge
     val timerColorGUI = TimerColorGUI(this)
     var isSharedInventoryActive = false
     lateinit var mobRandomizerChallenge: MobRandomizerChallenge
@@ -121,7 +123,8 @@ class Main : JavaPlugin(), Listener {
 
         // Effects-Challenge initialisieren (noch nicht automatisch starten)
         effectsChallenge = io.github.black_Kittys22.challengekittys.ChunkChallenge.effects.EffectsChallenge(this)
-
+        farbspurChallenge = FarbspurChallenge(this)
+        server.pluginManager.registerEvents(farbspurChallenge, this)
         // ── RelayChallenge: ZUERST initialisieren, dann registrieren ──────────
         relayChallenge = RelayChallenge(this)
         isRelayChallengeActive = config.getBoolean("challenges.relay.active", false)
@@ -213,6 +216,8 @@ class Main : JavaPlugin(), Listener {
 
     override fun onDisable() {
         DiscordBot.stop()
+        config.set("challenges.farbspur.active", farbspurChallenge.isActive)
+        if (::farbspurChallenge.isInitialized) farbspurChallenge.stop()
         logger.info("Discord Bot gestoppt")
         config.set("exemptPlayers", exemptPlayers.map { it.toString() })
         config.set("challenges.relay.active", isRelayChallengeActive)

@@ -27,13 +27,12 @@ class ChallengeManager(private val plugin: Main) : Listener {
     private val uuidKey = NamespacedKey(plugin, "chain_target_uuid")
 
     fun openChallengeGUI(player: Player) {
-        val inv = Bukkit.createInventory(null, 36, challengeTitle)
+        val inv = Bukkit.createInventory(null, 45, challengeTitle)
 
         val isAnyMBActive = plugin.monsterBattleChallenge.isFarmingPhase || plugin.monsterBattleChallenge.isArenaPhase
 
         inv.setItem(34, createItem(Material.NETHER_STAR, "Randomizer", plugin.isRandomizerActive || plugin.isMobRandomizerActive ||
-                        plugin.isCraftingRandomizerActive))
-
+                plugin.isCraftingRandomizerActive))
 
         inv.setItem(0, createItem(Material.CLOCK, "Relay Challenge", plugin.isRelayChallengeActive))
         inv.setItem(10, createItem(Material.GRASS_BLOCK,          "Chunk Challenge",      plugin.isChunkChallengeSelected))
@@ -48,12 +47,11 @@ class ChallengeManager(private val plugin: Main) : Listener {
         inv.setItem(24, createItem(Material.WITHER_SKELETON_SKULL, "All Mobs",             plugin.isAllMobsChallengeActive))
         inv.setItem(26, createItem(Material.BEDROCK,               "Bedrock Challenge",    plugin.bedrockChallenge.isActive))
         inv.setItem(28, createItem(Material.REPEATER,              "Infinite Loop",        plugin.isInfiniteLoopActive))
-
-        // ─── Chained Together ─────────────────────────────────────────────────
         inv.setItem(2,  createItem(Material.IRON_CHAIN,                 "Chained Together",     plugin.isChainedTogetherActive))
-
-        // ─── NEU: Swap Keys ───────────────────────────────────────────────────
         inv.setItem(8,  createItem(Material.FEATHER,               "Swap Keys",            plugin.isSwapKeysChallengeActive))
+
+        // NEU: Farbspur Challenge
+        inv.setItem(30, createItem(Material.LEATHER_BOOTS, "Farbspur Challenge", plugin.farbspurChallenge.isActive))
 
         player.openInventory(inv)
     }
@@ -384,7 +382,16 @@ class ChallengeManager(private val plugin: Main) : Listener {
                         plugin.swapKeysChallenge.enable()
                         plugin.isSwapKeysChallengeActive = true
                     }
+                    plugin.saveConfig()
+                }
 
+                // NEU: Farbspur Challenge
+                30 -> {
+                    if (plugin.farbspurChallenge.isActive) {
+                        plugin.farbspurChallenge.stop()
+                    } else {
+                        plugin.farbspurChallenge.start()
+                    }
                     plugin.saveConfig()
                 }
             }
@@ -456,12 +463,6 @@ class ChallengeManager(private val plugin: Main) : Listener {
 
             openSettingsGUI(player)
         }
-
-        // Der Rest deiner GUIs bleibt unverändert:
-        // luegenTitle
-        // chainTitle
-        // chainRolesTitle
-        // chainRolePickTitle
     }
 
     private fun createItem(material: Material, name: String, isActive: Boolean): ItemStack {
@@ -526,11 +527,17 @@ class ChallengeManager(private val plugin: Main) : Listener {
                 lore.add(Component.text("Alle Spieler teilen sich ein Inventar.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
                 lore.add(Component.text("Optional – kann auch deaktiviert bleiben.", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
             }
-            // ─── NEU: Swap Keys ───────────────────────────────────────────────
             "Swap Keys" -> {
                 lore.add(Component.text("Dein W bewegt einen zufälligen anderen Spieler!", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
                 lore.add(Component.text("Die eigene Vorwärtsbewegung wird blockiert.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
                 lore.add(Component.text("Zuordnung wird bei Join/Quit neu gewürfelt.", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+            }
+            "Farbspur Challenge" -> {
+                lore.add(Component.text("Hinterlasse eine farbige Spur aus Concrete!", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
+                lore.add(Component.text("Spuren dürfen sich NICHT kreuzen!", NamedTextColor.RED, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false))
+                lore.add(Component.text("Bei Kreuzung sterben ALLE Spieler!", NamedTextColor.DARK_RED, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false))
+                lore.add(Component.text("Danach werden alle Spuren gelöscht", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
+                lore.add(Component.text("und neue Farben verteilt!", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
             }
         }
 
