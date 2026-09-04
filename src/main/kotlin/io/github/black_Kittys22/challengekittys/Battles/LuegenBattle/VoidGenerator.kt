@@ -1,4 +1,4 @@
-package io.github.black_Kittys22.challengekittys.LuegenBattle
+package io.github.black_Kittys22.challengekittys.Battles.LuegenBattle
 
 import org.bukkit.Material
 import org.bukkit.generator.ChunkGenerator

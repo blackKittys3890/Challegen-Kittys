@@ -2,14 +2,14 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.9.21"
-    kotlin("plugin.serialization") version "1.9.21"
+    kotlin("jvm") version "2.4.10"
+    kotlin("plugin.serialization") version "2.4.10"
     id("com.gradleup.shadow") version "9.2.2"
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.19"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.22"
     id("xyz.jpenilla.run-paper") version "3.0.2"
 }
 
-val commandAPIVersion = "11.1.0"
+val commandAPIVersion = "12.0.0"
 
 group = "io.github.black_Kittys22"
 version = "3.1"
@@ -24,14 +24,14 @@ repositories {
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(25))
 }
 
 paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 
 dependencies {
     // PaperMC
-    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("26.2.build.+")
 
     // CommandAPI
     implementation("dev.jorel", "commandapi-paper-shade", commandAPIVersion)
@@ -49,9 +49,9 @@ dependencies {
 }
 
 tasks.withType<KotlinCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = "21"
-        freeCompilerArgs += listOf(
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_25)
+        freeCompilerArgs.addAll(
             "-Xjsr305=strict",
             "-Xallow-kotlin-package",
             "-opt-in=kotlin.RequiresOptIn"
@@ -61,7 +61,7 @@ tasks.withType<KotlinCompile>().configureEach {
 
 tasks.withType<JavaCompile>().configureEach {
     options.encoding = Charsets.UTF_8.name()
-    options.release.set(21)
+    options.release.set(25)
 }
 
 tasks.named("build") {

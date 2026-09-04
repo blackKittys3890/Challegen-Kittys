@@ -1,10 +1,11 @@
-package io.github.black_Kittys22.challengekittys.LuegenBattle
+package io.github.black_Kittys22.challengekittys.Battles.LuegenBattle
 
 import io.github.black_Kittys22.challengekittys.Main
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.*
+import org.bukkit.entity.Player
 import org.bukkit.generator.structure.Structure
 import java.io.File
 import java.util.*
@@ -105,7 +106,7 @@ class StructureBattleManager(private val plugin: Main) {
     }
 
     private fun createWorldsSequentially(
-        remainingPlayers: MutableList<org.bukkit.entity.Player>,
+        remainingPlayers: MutableList<Player>,
         random: Random,
         delay: Long
     ) {
@@ -182,7 +183,7 @@ class StructureBattleManager(private val plugin: Main) {
         }, delay)
     }
 
-    private fun processPlayerWorld(player: org.bukkit.entity.Player, world: World, structureName: String, actualWorldName: String) {
+    private fun processPlayerWorld(player: Player, world: World, structureName: String, actualWorldName: String) {
         player.sendMessage(Component.text("Suche Struktur...", NamedTextColor.GREEN))
 
         // Verwende /locate structure um die nächste Struktur zu finden
@@ -269,7 +270,7 @@ class StructureBattleManager(private val plugin: Main) {
     }
 
     private fun finishPlayerSetup(
-        player: org.bukkit.entity.Player,
+        player: Player,
         world: World,
         structureX: Int,
         structureY: Int,

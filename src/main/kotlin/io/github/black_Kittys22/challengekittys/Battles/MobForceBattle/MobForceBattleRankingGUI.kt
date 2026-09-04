@@ -1,11 +1,14 @@
-package io.github.black_Kittys22.challengekittys.MobForceBattle
+package io.github.black_Kittys22.challengekittys.Battles.MobForceBattle
 
 import io.github.black_Kittys22.challengekittys.Main
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+import net.kyori.adventure.title.Title
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -14,6 +17,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
+import java.time.Duration
 
 /**
  * Schrittweise Enthüllung der Rangliste von hinten nach vorne.
@@ -137,7 +141,7 @@ object MobForceRankingGUI : Listener {
                 // Sound für alle die das GUI haben
                 Bukkit.getOnlinePlayers()
                     .filter { it.openInventory.topInventory in openInventories }
-                    .forEach { it.playSound(it.location, org.bukkit.Sound.UI_BUTTON_CLICK, 0.5f, 1.2f) }
+                    .forEach { it.playSound(it.location, Sound.UI_BUTTON_CLICK, 0.5f, 1.2f) }
 
                 mobIndex++
                 if (mobIndex < killedMobs.size) {
@@ -148,15 +152,15 @@ object MobForceRankingGUI : Listener {
                         Bukkit.getOnlinePlayers()
                             .filter { it.openInventory.topInventory in openInventories }
                             .forEach {
-                                it.playSound(it.location, org.bukkit.Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f)
+                                it.playSound(it.location, Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f)
                                 it.showTitle(
-                                    net.kyori.adventure.title.Title.title(
+                                    Title.title(
                                         Component.text("🏆 ${team.displayName}", team.color, TextDecoration.BOLD),
                                         Component.text("Gewinner!", NamedTextColor.YELLOW),
-                                        net.kyori.adventure.title.Title.Times.times(
-                                            java.time.Duration.ofMillis(300),
-                                            java.time.Duration.ofSeconds(3),
-                                            java.time.Duration.ofSeconds(1)
+                                        Title.Times.times(
+                                            Duration.ofMillis(300),
+                                            Duration.ofSeconds(3),
+                                            Duration.ofSeconds(1)
                                         )
                                     )
                                 )
@@ -326,7 +330,7 @@ object MobForceRankingGUI : Listener {
     // ─── Click-Handler ────────────────────────────────────────────────────────
     @EventHandler
     fun onInventoryClick(e: InventoryClickEvent) {
-        val titleStr = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+        val titleStr = PlainTextComponentSerializer
             .plainText().serialize(e.view.title())
         if (!titleStr.contains(TITLE_STR)) return
         e.isCancelled = true

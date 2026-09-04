@@ -1,4 +1,4 @@
-package io.github.black_Kittys22.challengekittys.MonsterBattle
+package io.github.black_Kittys22.challengekittys.Battles.MonsterBattle
 
 import io.github.black_Kittys22.challengekittys.Main
 import net.kyori.adventure.text.Component

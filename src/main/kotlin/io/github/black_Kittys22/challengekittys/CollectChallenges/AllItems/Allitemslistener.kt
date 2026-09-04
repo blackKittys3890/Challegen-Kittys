@@ -1,4 +1,4 @@
-package io.github.black_Kittys22.challengekittys.AllItems
+package io.github.black_Kittys22.challengekittys.CollectChallenges.AllItems
 
 import io.github.black_Kittys22.challengekittys.Main
 import net.kyori.adventure.text.Component

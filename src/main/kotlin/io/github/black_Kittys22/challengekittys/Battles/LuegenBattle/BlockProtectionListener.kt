@@ -1,6 +1,7 @@
-package io.github.black_Kittys22.challengekittys.LuegenBattle
+package io.github.black_Kittys22.challengekittys.Battles.LuegenBattle
 
 import io.github.black_Kittys22.challengekittys.Main
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageEvent
@@ -10,7 +11,7 @@ class BattleProtectionListener(private val plugin: Main) : Listener {
 
     @EventHandler
     fun onEntityDamage(event: EntityDamageEvent) {
-        val player = event.entity as? org.bukkit.entity.Player ?: return
+        val player = event.entity as? Player ?: return
 
         // Verhindere Fall-Schaden in der Battle-Welt
         if (player.world.name == "battle_world" && event.cause == EntityDamageEvent.DamageCause.FALL) {

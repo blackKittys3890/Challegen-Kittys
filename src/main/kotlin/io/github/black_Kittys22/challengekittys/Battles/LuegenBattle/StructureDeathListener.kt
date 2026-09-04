@@ -1,4 +1,4 @@
-package io.github.black_Kittys22.challengekittys.LuegenBattle
+package io.github.black_Kittys22.challengekittys.Battles.LuegenBattle
 
 import io.github.black_Kittys22.challengekittys.Main
 import org.bukkit.event.EventHandler

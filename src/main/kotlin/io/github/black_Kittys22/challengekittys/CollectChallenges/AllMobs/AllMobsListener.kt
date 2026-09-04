@@ -1,4 +1,4 @@
-package io.github.black_Kittys22.challengekittys.AllMobs
+package io.github.black_Kittys22.challengekittys.CollectChallenges.AllMobs
 
 import io.github.black_Kittys22.challengekittys.Main
 import net.kyori.adventure.text.Component
@@ -10,6 +10,7 @@ import org.bukkit.Sound
 import org.bukkit.boss.BarColor
 import org.bukkit.boss.BarStyle
 import org.bukkit.boss.BossBar
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -19,6 +20,7 @@ import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.inventory.PrepareAnvilEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import java.util.*
 
@@ -114,8 +116,8 @@ class AllMobsListener(private val plugin: Main) : Listener {
             .decoration(TextDecoration.ITALIC, false))
 
         meta.lore(lore)
-        meta.addEnchant(org.bukkit.enchantments.Enchantment.LUCK_OF_THE_SEA, 1, true)
-        meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS)
+        meta.addEnchant(Enchantment.LUCK_OF_THE_SEA, 1, true)
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
 
         trophy.itemMeta = meta
 

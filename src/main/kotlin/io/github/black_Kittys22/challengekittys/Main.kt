@@ -1,7 +1,5 @@
 package io.github.black_Kittys22.challengekittys
 
-import io.github.black_Kittys22.challengekittys.AllItems.AllItemsListener
-import io.github.black_Kittys22.challengekittys.AllMobs.AllMobsListener
 import io.github.black_Kittys22.challengekittys.Challenges.BedrockChallenge
 import io.github.black_Kittys22.challengekittys.Challenges.CraftingRandomizer
 import io.github.black_Kittys22.challengekittys.Challenges.HalfHeartChallenge
@@ -17,26 +15,29 @@ import io.github.black_Kittys22.challengekittys.ChunkChallenge.*
 import io.github.black_Kittys22.challengekittys.Commands.BCCommand
 import io.github.black_Kittys22.challengekittys.Commands.BackpackCommand
 import io.github.black_Kittys22.challengekittys.Commands.ExemptCommand
-import io.github.black_Kittys22.challengekittys.MonsterBattle.*
 import io.github.black_Kittys22.challengekittys.Commands.LBCommand
 import io.github.black_Kittys22.challengekittys.Commands.SettingsCommand
 import io.github.black_Kittys22.challengekittys.Commands.SpectatorManager
 import io.github.black_Kittys22.challengekittys.DamageInvClear.DamageListener
-import io.github.black_Kittys22.challengekittys.LuegenBattle.BattleProtectionListener
-import io.github.black_Kittys22.challengekittys.LuegenBattle.StructureBattleManager
-import io.github.black_Kittys22.challengekittys.LuegenBattle.StructureDeathListener
 import io.github.black_Kittys22.challengekittys.SharedInventoryChallenge.SharedInvListener
-import io.github.black_Kittys22.challengekittys.AllAchievments.AllAchievments
+import io.github.black_Kittys22.challengekittys.AllArmorTrims.AllArmorTrims
+import io.github.black_Kittys22.challengekittys.Battles.LuegenBattle.BattleProtectionListener
+import io.github.black_Kittys22.challengekittys.Battles.LuegenBattle.StructureBattleManager
+import io.github.black_Kittys22.challengekittys.Battles.LuegenBattle.StructureDeathListener
+import io.github.black_Kittys22.challengekittys.Battles.MobForceBattle.MobForceBattleCommand
+import io.github.black_Kittys22.challengekittys.Battles.MobForceBattle.MobForceBattleListener
+import io.github.black_Kittys22.challengekittys.Battles.MobForceBattle.MobForceBattleManager
+import io.github.black_Kittys22.challengekittys.Battles.MobForceBattle.MobForceRankingGUI
+import io.github.black_Kittys22.challengekittys.Battles.MonsterBattle.MonsterBattleChallenge
+import io.github.black_Kittys22.challengekittys.Battles.MonsterBattle.MonsterBattleCommand
 import io.github.black_Kittys22.challengekittys.ChainedTogether.ChainedTogetherChallenge
-import io.github.black_Kittys22.challengekittys.Challenges.FarbspurChallenge
 import io.github.black_Kittys22.challengekittys.RelayChallenge.RelayChallenge
 import io.github.black_Kittys22.challengekittys.Challenges.SwapKeysChallenge
+import io.github.black_Kittys22.challengekittys.CollectChallenges.AllAchievments.AllAchievments
+import io.github.black_Kittys22.challengekittys.CollectChallenges.AllItems.AllItemsListener
+import io.github.black_Kittys22.challengekittys.CollectChallenges.AllMobs.AllMobsListener
 import io.github.black_Kittys22.challengekittys.Commands.LinkCommand
 import io.github.black_Kittys22.challengekittys.Commands.WarnCommand
-import io.github.black_Kittys22.challengekittys.MobForceBattle.MobForceBattleCommand
-import io.github.black_Kittys22.challengekittys.MobForceBattle.MobForceBattleListener
-import io.github.black_Kittys22.challengekittys.MobForceBattle.MobForceBattleManager
-import io.github.black_Kittys22.challengekittys.MobForceBattle.MobForceRankingGUI
 import io.github.black_Kittys22.challengekittys.RelayChallenge.DiscordVoiceManager
 import io.github.black_Kittys22.challengekittys.SuperChallenges.FullNetheriteBeaconChallenge
 import io.github.black_Kittys22.challengekittys.SuperChallenges.SuperChallengeManager
@@ -74,6 +75,8 @@ class Main : JavaPlugin(), Listener {
     var isAllMobsChallengeActive = false
     lateinit var allAchievments: AllAchievments
     var isSharedAdvancementsActive = false
+    lateinit var allArmorTrims: AllArmorTrims
+    var isArmorTrimsChallengeActive = false
     lateinit var infiniteLoopChallenge: InfiniteLoopChallenge
     var isInfiniteLoopActive = false
     lateinit var chainedTogetherChallenge: ChainedTogetherChallenge
@@ -93,7 +96,6 @@ class Main : JavaPlugin(), Listener {
     var isDamageClearInventoryActive = false
     val token = config.getString("discord.token")
     var isDeadSyncActive = false
-    lateinit var farbspurChallenge: FarbspurChallenge
     val timerColorGUI = TimerColorGUI(this)
     var isSharedInventoryActive = false
     lateinit var mobRandomizerChallenge: MobRandomizerChallenge
@@ -123,8 +125,6 @@ class Main : JavaPlugin(), Listener {
 
         // Effects-Challenge initialisieren (noch nicht automatisch starten)
         effectsChallenge = io.github.black_Kittys22.challengekittys.ChunkChallenge.effects.EffectsChallenge(this)
-        farbspurChallenge = FarbspurChallenge(this)
-        server.pluginManager.registerEvents(farbspurChallenge, this)
         // ── RelayChallenge: ZUERST initialisieren, dann registrieren ──────────
         relayChallenge = RelayChallenge(this)
         isRelayChallengeActive = config.getBoolean("challenges.relay.active", false)
@@ -134,13 +134,6 @@ class Main : JavaPlugin(), Listener {
         discordVoiceManager.init()
 
         linkCommand = LinkCommand(this)
-
-        if (token == null || token == "DEIN_TOKEN_HIER") {
-            logger.warning("Discord Bot deaktiviert: Token fehlt")
-        } else {
-            DiscordBot.start(token, linkCommand, discordVoiceManager)
-            logger.info("Discord Bot gestartet")
-        }
 
         mobDropChallenge = MobDropChallenge(this)
         isMobDropChallengeActive = config.getBoolean("challenges.mobDrop.active", false)
@@ -190,6 +183,9 @@ class Main : JavaPlugin(), Listener {
         allAchievments = AllAchievments(this)
         isSharedAdvancementsActive = config.getBoolean("challenges.sharedAdvancements.active", false)
         server.pluginManager.registerEvents(allAchievments, this)
+        allArmorTrims = AllArmorTrims(this)
+        isArmorTrimsChallengeActive = config.getBoolean("challenges.allArmorTrims.active", false)
+        server.pluginManager.registerEvents(allArmorTrims, this)
         fullNetheriteBeaconChallenge = FullNetheriteBeaconChallenge(this)
         server.pluginManager.registerEvents(fullNetheriteBeaconChallenge, this)
         superChallengeManager = SuperChallengeManager(this)
@@ -215,9 +211,6 @@ class Main : JavaPlugin(), Listener {
     }
 
     override fun onDisable() {
-        DiscordBot.stop()
-        config.set("challenges.farbspur.active", farbspurChallenge.isActive)
-        if (::farbspurChallenge.isInitialized) farbspurChallenge.stop()
         logger.info("Discord Bot gestoppt")
         config.set("exemptPlayers", exemptPlayers.map { it.toString() })
         config.set("challenges.relay.active", isRelayChallengeActive)
@@ -234,6 +227,8 @@ class Main : JavaPlugin(), Listener {
         config.set("challenges.allItems.active", isAllItemsChallengeActive)
         config.set("challenges.allMobs.active", isAllMobsChallengeActive)
         config.set("challenges.sharedAdvancements.active", isSharedAdvancementsActive)
+        config.set("challenges.allArmorTrims.active", isArmorTrimsChallengeActive)
+        if (::allArmorTrims.isInitialized) allArmorTrims.saveProgress()
         config.set("challenges.infiniteLoop.active", isInfiniteLoopActive)
         config.set("challenges.randomizer.active", isRandomizerActive)
         config.set("challenges.swapKeys.active", isSwapKeysChallengeActive)

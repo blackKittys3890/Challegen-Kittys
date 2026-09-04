@@ -1,11 +1,13 @@
-package io.github.black_Kittys22.challengekittys.MobForceBattle
+package io.github.black_Kittys22.challengekittys.Battles.MobForceBattle
 
 import io.github.black_Kittys22.challengekittys.Main
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
+import net.kyori.adventure.title.Title
 import org.bukkit.Bukkit
 import org.bukkit.entity.EntityType
+import java.time.Duration
 import java.util.*
 
 // ─── Datenklasse für ein Team ────────────────────────────────────────────────
@@ -141,13 +143,13 @@ class MobForceBattleManager(private val plugin: Main) {
             Bukkit.getOnlinePlayers().forEach { p ->
                 p.teleport(spawn)
                 p.showTitle(
-                    net.kyori.adventure.title.Title.title(
+                    Title.title(
                         Component.text("Zeit abgelaufen!", NamedTextColor.RED, TextDecoration.BOLD),
                         Component.text("Rangliste öffnet sich...", NamedTextColor.GRAY),
-                        net.kyori.adventure.title.Title.Times.times(
-                            java.time.Duration.ofMillis(500),
-                            java.time.Duration.ofSeconds(3),
-                            java.time.Duration.ofSeconds(1)
+                        Title.Times.times(
+                            Duration.ofMillis(500),
+                            Duration.ofSeconds(3),
+                            Duration.ofSeconds(1)
                         )
                     )
                 )

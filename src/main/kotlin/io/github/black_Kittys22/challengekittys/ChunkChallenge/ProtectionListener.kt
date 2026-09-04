@@ -18,12 +18,4 @@ class ProtectionListener(private val plugin: Main) : Listener {
         }
     }
 
-    @EventHandler
-    fun onPlace(e: BlockPlaceEvent) {
-        // Verhindert das Platzieren von Blumentöpfen (wegen technischer Probleme im Chunk-Tausch)
-        val type = e.block.type
-        if (type == Material.FLOWER_POT || type.name.contains("POTTED")) {
-            e.isCancelled = true
-        }
-    }
 }

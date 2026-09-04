@@ -1,4 +1,4 @@
-package io.github.black_Kittys22.challengekittys.AllAchievments
+package io.github.black_Kittys22.challengekittys.CollectChallenges.AllAchievments
 
 import io.github.black_Kittys22.challengekittys.Main
 import net.kyori.adventure.bossbar.BossBar

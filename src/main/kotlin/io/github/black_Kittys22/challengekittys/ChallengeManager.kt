@@ -23,6 +23,7 @@ class ChallengeManager(private val plugin: Main) : Listener {
     private val chainRolePickTitle = Component.text("Rolle auswählen", NamedTextColor.AQUA, TextDecoration.BOLD)
 
     private val randommizerTitle = Component.text("Wähle die Randomizer Challenge", NamedTextColor.AQUA, TextDecoration.BOLD)
+    private val sammelTitle = Component.text("Sammel-Challenges", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD)
 
     private val uuidKey = NamespacedKey(plugin, "chain_target_uuid")
 
@@ -41,17 +42,15 @@ class ChallengeManager(private val plugin: Main) : Listener {
         inv.setItem(14, createItem(Material.CHEST,                 "Shared Inventory",     plugin.isSharedInventoryActive))
         inv.setItem(16, createItem(Material.RED_BANNER,            "Lügenbattle",          false))
         inv.setItem(18, createItem(Material.LIGHT_BLUE_STAINED_GLASS, "Chunk Effects",       plugin.isEffectsChunkActive))
-        inv.setItem(6,  createItem(Material.BOOKSHELF,             "All Advancements",     plugin.isSharedAdvancementsActive))
+        val anySammelActive = plugin.isSharedAdvancementsActive || plugin.isAllItemsChallengeActive ||
+                plugin.isAllMobsChallengeActive || plugin.isArmorTrimsChallengeActive
+        inv.setItem(6,  createItem(Material.CHEST,                 "Sammel-Challenges",    anySammelActive))
         inv.setItem(20, createItem(Material.FERMENTED_SPIDER_EYE,  "Half Heart",           plugin.isHalfHeartChallengeActive))
-        inv.setItem(22, createItem(Material.BEACON,                "All Items",            plugin.isAllItemsChallengeActive))
-        inv.setItem(24, createItem(Material.WITHER_SKELETON_SKULL, "All Mobs",             plugin.isAllMobsChallengeActive))
         inv.setItem(26, createItem(Material.BEDROCK,               "Bedrock Challenge",    plugin.bedrockChallenge.isActive))
         inv.setItem(28, createItem(Material.REPEATER,              "Infinite Loop",        plugin.isInfiniteLoopActive))
         inv.setItem(2,  createItem(Material.IRON_CHAIN,                 "Chained Together",     plugin.isChainedTogetherActive))
         inv.setItem(8,  createItem(Material.FEATHER,               "Swap Keys",            plugin.isSwapKeysChallengeActive))
 
-        // NEU: Farbspur Challenge
-        inv.setItem(30, createItem(Material.LEATHER_BOOTS, "Farbspur Challenge", plugin.farbspurChallenge.isActive))
 
         player.openInventory(inv)
     }
@@ -76,6 +75,19 @@ class ChallengeManager(private val plugin: Main) : Listener {
             "Crafting Randomizer",
             plugin.isCraftingRandomizerActive
         ))
+
+        player.openInventory(inv)
+    }
+
+    private fun openSammelGUI(player: Player) {
+        val inv = Bukkit.createInventory(null, 27, sammelTitle)
+
+        inv.setItem(10, createItem(Material.BEACON,                "All Items",        plugin.isAllItemsChallengeActive))
+        inv.setItem(12, createItem(Material.WITHER_SKELETON_SKULL, "All Mobs",         plugin.isAllMobsChallengeActive))
+        inv.setItem(14, createItem(Material.BOOKSHELF,             "All Advancements", plugin.isSharedAdvancementsActive))
+        inv.setItem(18, createArmorTrimsItem())
+
+        inv.setItem(22, createItem(Material.BARRIER, "Zurück", false))
 
         player.openInventory(inv)
     }
@@ -257,13 +269,8 @@ class ChallengeManager(private val plugin: Main) : Listener {
                 }
 
                 6 -> {
-                    plugin.isSharedAdvancementsActive = !plugin.isSharedAdvancementsActive
-                    player.sendMessage(
-                        if (plugin.isSharedAdvancementsActive)
-                            "§aAll Advancements aktiviert!"
-                        else
-                            "§cAll Advancements deaktiviert."
-                    )
+                    openSammelGUI(player)
+                    return
                 }
 
                 10 -> {
@@ -327,26 +334,6 @@ class ChallengeManager(private val plugin: Main) : Listener {
                     plugin.halfHeartChallenge.applyToAll()
                 }
 
-                22 -> {
-                    plugin.isAllItemsChallengeActive =
-                        !plugin.isAllItemsChallengeActive
-
-                    if (plugin.isAllItemsChallengeActive)
-                        plugin.allItemsListener.showBar(player)
-                    else
-                        plugin.allItemsListener.hideBar()
-                }
-
-                24 -> {
-                    plugin.isAllMobsChallengeActive =
-                        !plugin.isAllMobsChallengeActive
-
-                    if (plugin.isAllMobsChallengeActive)
-                        plugin.allMobsListener.showBar(player)
-                    else
-                        plugin.allMobsListener.hideBar()
-                }
-
                 26 -> {
                     if (!plugin.bedrockChallenge.isActive)
                         plugin.bedrockChallenge.start()
@@ -385,15 +372,6 @@ class ChallengeManager(private val plugin: Main) : Listener {
                     plugin.saveConfig()
                 }
 
-                // NEU: Farbspur Challenge
-                30 -> {
-                    if (plugin.farbspurChallenge.isActive) {
-                        plugin.farbspurChallenge.stop()
-                    } else {
-                        plugin.farbspurChallenge.start()
-                    }
-                    plugin.saveConfig()
-                }
             }
 
             openChallengeGUI(player)
@@ -446,6 +424,67 @@ class ChallengeManager(private val plugin: Main) : Listener {
             openRandomizerGUI(player)
         }
 
+        // ── Sammel-Challenges GUI ────────────────────────────────────────────
+        else if (title == sammelTitle) {
+            event.isCancelled = true
+
+            when (event.slot) {
+                10 -> {
+                    plugin.isAllItemsChallengeActive = !plugin.isAllItemsChallengeActive
+                    if (plugin.isAllItemsChallengeActive)
+                        plugin.allItemsListener.showBar(player)
+                    else
+                        plugin.allItemsListener.hideBar()
+                }
+
+                12 -> {
+                    plugin.isAllMobsChallengeActive = !plugin.isAllMobsChallengeActive
+                    if (plugin.isAllMobsChallengeActive)
+                        plugin.allMobsListener.showBar(player)
+                    else
+                        plugin.allMobsListener.hideBar()
+                }
+
+                14 -> {
+                    plugin.isSharedAdvancementsActive = !plugin.isSharedAdvancementsActive
+                    player.sendMessage(
+                        if (plugin.isSharedAdvancementsActive)
+                            "§aAll Advancements aktiviert!"
+                        else
+                            "§cAll Advancements deaktiviert."
+                    )
+                }
+
+
+                18 -> {
+                    if (event.isShiftClick) {
+                        plugin.allArmorTrims.cycleDifficulty()
+                        player.sendMessage("§bArmor-Trims-Schwierigkeit: §f${plugin.allArmorTrims.difficulty.name}")
+                    } else {
+                        plugin.isArmorTrimsChallengeActive = !plugin.isArmorTrimsChallengeActive
+                        if (plugin.isArmorTrimsChallengeActive)
+                            plugin.allArmorTrims.showBar(player)
+                        else
+                            plugin.allArmorTrims.hideBar()
+                        player.sendMessage(
+                            if (plugin.isArmorTrimsChallengeActive)
+                                "§aAll Armor Trims aktiviert!"
+                            else
+                                "§cAll Armor Trims deaktiviert."
+                        )
+                    }
+                }
+
+                22 -> {
+                    openChallengeGUI(player)
+                    return
+                }
+            }
+
+            plugin.saveConfig()
+            openSammelGUI(player)
+        }
+
         // ── Einstellungen GUI ──────────────────────────────────────────────────
         else if (title == settingsTitle) {
             event.isCancelled = true
@@ -463,6 +502,32 @@ class ChallengeManager(private val plugin: Main) : Listener {
 
             openSettingsGUI(player)
         }
+    }
+
+    private fun createArmorTrimsItem(): ItemStack {
+        val active = plugin.isArmorTrimsChallengeActive
+        val item = ItemStack(Material.NETHERITE_HELMET)
+        val meta = item.itemMeta!!
+        val color = if (active) NamedTextColor.GREEN else NamedTextColor.RED
+        meta.displayName(Component.text("All Armor Trims", color).decoration(TextDecoration.ITALIC, false))
+
+        val lore = mutableListOf<Component>()
+        lore.add(Component.text(if (active) "AKTIVIERT" else "DEAKTIVIERT", color).decoration(TextDecoration.ITALIC, false))
+        lore.add(Component.text("Schmiede jede Trim-Kombi am Amboss!", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
+        lore.add(Component.text("Schwierigkeit: ${plugin.allArmorTrims.difficulty.name}", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
+        if (plugin.allArmorTrims.difficulty == io.github.black_Kittys22.challengekittys.AllArmorTrims.TrimDifficulty.EASY) {
+            lore.add(Component.text("Easy-Stufe: ${plugin.allArmorTrims.easyTier}", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
+        }
+        lore.add(Component.text("Fortschritt: ${plugin.allArmorTrims.getProgressString()}", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false))
+        lore.add(Component.text("Klick: Ein/Aus  |  Shift-Klick: Schwierigkeit wechseln", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+        meta.lore(lore)
+
+        if (active) {
+            meta.addEnchant(org.bukkit.enchantments.Enchantment.LUCK_OF_THE_SEA, 1, true)
+            meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS)
+        }
+        item.itemMeta = meta
+        return item
     }
 
     private fun createItem(material: Material, name: String, isActive: Boolean): ItemStack {
@@ -499,6 +564,14 @@ class ChallengeManager(private val plugin: Main) : Listener {
             "All Mobs" -> {
                 lore.add(Component.text("Besiege jeden Mob nacheinander,", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
                 lore.add(Component.text("um exklusive Trophäen zu sammeln!", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
+            }
+            "All Deaths" -> {
+                lore.add(Component.text("Stirbt ein Spieler auf eine neue Art,", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
+                lore.add(Component.text("zählt das für das ganze Team!", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
+            }
+            "Sammel-Challenges" -> {
+                lore.add(Component.text("Items, Mobs, Advancements & Deaths", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
+                lore.add(Component.text("Klicken für Optionen →", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
             }
             "Infinite Loop" -> {
                 lore.add(Component.text("Jede Aktion wird unendlich wiederholt:", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))

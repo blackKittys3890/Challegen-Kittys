@@ -9,6 +9,7 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.inventory.ItemStack
@@ -130,7 +131,7 @@ class BedrockChallenge(private val plugin: Main) : Listener {
         Bukkit.getOnlinePlayers().forEach { it.scoreboard = board }
     }
 
-    @EventHandler(priority = org.bukkit.event.EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     fun onDeath(e: PlayerDeathEvent) {
         if (!isActive) return
 
